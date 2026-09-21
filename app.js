@@ -1,0 +1,407 @@
+// Navigation
+document.querySelectorAll('.nav-item[data-section]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.section;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    link.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + target).classList.add('active');
+    initSection(target);
+  });
+});
+
+document.querySelector('.see-all')?.addEventListener('click', e => {
+  e.preventDefault();
+  const target = e.currentTarget.dataset.section;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-section="${target}"]`)?.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + target).classList.add('active');
+  initSection(target);
+});
+
+document.querySelectorAll('.toggle-group').forEach(group => {
+  group.querySelectorAll('.tog').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.tog').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+});
+
+const initialized = new Set();
+function initSection(name) {
+  if (initialized.has(name)) return;
+  initialized.add(name);
+  if (name === 'overview') initOverview();
+  if (name === 'map') initFullMap();
+  if (name === 'dispatch') initDispatch();
+  if (name === 'tracking') initTracking();
+  if (name === 'workforce') initWorkforce();
+  if (name === 'performance') initPerformance();
+  if (name === 'predictive') initPredictive();
+  if (name === 'analytics') initAnalytics();
+}
+
+Chart.defaults.font.family = "'Segoe UI', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#7a8fa6';
+
+const TEAL = '#1abc9c', ORANGE = '#f39c12', RED = '#e74c3c', BLUE = '#0ea5e9', PURPLE = '#8b5cf6';
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'];
+
+// Soshanguve centre
+const SOSH = [-25.5231, 28.0900];
+
+// Outages across Soshanguve blocks (real block approximate coords)
+const outages = [
+  { lat: -25.5050, lng: 28.0750, label: 'Block X — Electricity (Critical)', color: RED, type: 'electricity' },
+  { lat: -25.5180, lng: 28.1020, label: 'Block S — Electricity (Critical)', color: RED, type: 'electricity' },
+  { lat: -25.5320, lng: 28.0650, label: 'Block H — Water (In Progress)', color: ORANGE, type: 'water' },
+  { lat: -25.5400, lng: 28.1100, label: 'Block F — Sewage (In Progress)', color: ORANGE, type: 'sewage' },
+  { lat: -25.5100, lng: 28.0900, label: 'Block BB — Roads (Resolved)', color: TEAL, type: 'roads' },
+  { lat: -25.5250, lng: 28.0800, label: 'Block GG — Electricity (Critical)', color: RED, type: 'electricity' },
+  { lat: -25.5350, lng: 28.0950, label: 'Block CC — Electricity (In Progress)', color: ORANGE, type: 'electricity' },
+  { lat: -25.5150, lng: 28.1150, label: 'Block AA — Electricity (Critical)', color: RED, type: 'electricity' },
+  { lat: -25.5480, lng: 28.0820, label: 'Block EE — Water (In Progress)', color: ORANGE, type: 'water' },
+  { lat: -25.5060, lng: 28.1050, label: 'Block DD — Electricity (Resolved)', color: TEAL, type: 'electricity' },
+  { lat: -25.5290, lng: 28.0700, label: 'Block R — Electricity (Critical)', color: RED, type: 'electricity' },
+  { lat: -25.5420, lng: 28.1200, label: 'Block T — Roads (In Progress)', color: ORANGE, type: 'roads' },
+];
+
+// Electricity heatmap points [lat, lng, intensity]
+// Denser clusters around Block X, S, GG, AA, R (high-outage zones)
+const heatPoints = [
+  // Block X cluster
+  [-25.5050, 28.0750, 1.0], [-25.5060, 28.0760, 0.9], [-25.5040, 28.0740, 0.8],
+  [-25.5070, 28.0770, 0.7], [-25.5030, 28.0730, 0.6], [-25.5080, 28.0780, 0.5],
+  // Block S cluster
+  [-25.5180, 28.1020, 1.0], [-25.5190, 28.1030, 0.9], [-25.5170, 28.1010, 0.8],
+  [-25.5200, 28.1040, 0.7], [-25.5160, 28.1000, 0.6],
+  // Block GG cluster
+  [-25.5250, 28.0800, 0.9], [-25.5260, 28.0810, 0.8], [-25.5240, 28.0790, 0.7],
+  [-25.5270, 28.0820, 0.6], [-25.5230, 28.0780, 0.5],
+  // Block AA cluster
+  [-25.5150, 28.1150, 0.9], [-25.5160, 28.1160, 0.8], [-25.5140, 28.1140, 0.7],
+  [-25.5170, 28.1170, 0.6],
+  // Block R cluster
+  [-25.5290, 28.0700, 0.8], [-25.5300, 28.0710, 0.7], [-25.5280, 28.0690, 0.6],
+  // Block CC (medium)
+  [-25.5350, 28.0950, 0.6], [-25.5360, 28.0960, 0.5], [-25.5340, 28.0940, 0.4],
+  // Block DD (resolved, low)
+  [-25.5060, 28.1050, 0.3], [-25.5070, 28.1060, 0.2],
+  // Scattered low-intensity across township
+  [-25.5120, 28.0850, 0.3], [-25.5200, 28.0900, 0.4], [-25.5380, 28.1050, 0.3],
+  [-25.5450, 28.0880, 0.2], [-25.5100, 28.0980, 0.4], [-25.5220, 28.1100, 0.3],
+];
+
+const technicians = [
+  { lat: -25.5055, lng: 28.0755, label: 'J. Dlamini — On-Site (Block X)' },
+  { lat: -25.5185, lng: 28.1025, label: 'T. Mokoena — Assigned (Block S)' },
+  { lat: -25.5310, lng: 28.0660, label: 'P. Nkosi — Available' },
+  { lat: -25.5405, lng: 28.1105, label: 'M. Sithole — On-Site (Block F)' },
+  { lat: -25.5255, lng: 28.0805, label: 'L. Khumalo — Available' },
+];
+
+function circleIcon(color, size = 14) {
+  return L.divIcon({
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>`,
+    className: '', iconSize: [size, size]
+  });
+}
+
+// MINI MAP
+let miniMapInit = false;
+function initMiniMap() {
+  if (miniMapInit) return;
+  miniMapInit = true;
+  const map = L.map('miniMap', { zoomControl: false, attributionControl: false }).setView(SOSH, 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  outages.forEach(o => L.marker([o.lat, o.lng], { icon: circleIcon(o.color, 12) }).addTo(map));
+  // Mini heatmap
+  L.heatLayer(heatPoints, { radius: 22, blur: 18, maxZoom: 15, gradient: { 0.3: 'blue', 0.5: 'cyan', 0.7: 'yellow', 1.0: 'red' } }).addTo(map);
+}
+
+// FULL MAP with toggle
+let fullMapObj = null;
+let markerLayerGroup = null;
+let heatLayer = null;
+let techLayerGroup = null;
+
+function initFullMap() {
+  const map = L.map('fullMap').setView(SOSH, 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+  fullMapObj = map;
+
+  // Marker layer
+  markerLayerGroup = L.layerGroup();
+  outages.forEach(o => {
+    L.marker([o.lat, o.lng], { icon: circleIcon(o.color) })
+      .bindPopup(`<b>${o.label}</b>`)
+      .addTo(markerLayerGroup);
+  });
+
+  // Technician layer
+  techLayerGroup = L.layerGroup();
+  technicians.forEach(t => {
+    L.marker([t.lat, t.lng], { icon: circleIcon(BLUE, 16) })
+      .bindPopup(`<b>👷 ${t.label}</b>`)
+      .addTo(techLayerGroup);
+  });
+
+  // Heatmap layer
+  heatLayer = L.heatLayer(heatPoints, {
+    radius: 30, blur: 22, maxZoom: 15,
+    gradient: { 0.2: '#0000ff', 0.4: '#00cfff', 0.6: '#00ff88', 0.8: '#ffff00', 1.0: '#ff0000' }
+  });
+
+  // Default: markers + technicians
+  markerLayerGroup.addTo(map);
+  techLayerGroup.addTo(map);
+
+  // Toolbar buttons
+  document.getElementById('btnMarkers').addEventListener('click', () => {
+    map.addLayer(markerLayerGroup);
+    map.addLayer(techLayerGroup);
+    map.removeLayer(heatLayer);
+  });
+  document.getElementById('btnHeatmap').addEventListener('click', () => {
+    map.removeLayer(markerLayerGroup);
+    map.removeLayer(techLayerGroup);
+    map.addLayer(heatLayer);
+  });
+  document.getElementById('btnBoth').addEventListener('click', () => {
+    map.addLayer(markerLayerGroup);
+    map.addLayer(techLayerGroup);
+    map.addLayer(heatLayer);
+  });
+}
+
+function barChart(id, labels, datasets, opts = {}) {
+  return new Chart(document.getElementById(id), {
+    type: 'bar',
+    data: { labels, datasets },
+    options: { responsive: true, plugins: { legend: { display: datasets.length > 1 } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f0f4f8' }, beginAtZero: true } }, ...opts }
+  });
+}
+
+function lineChart(id, labels, datasets) {
+  return new Chart(document.getElementById(id), {
+    type: 'line',
+    data: { labels, datasets },
+    options: { responsive: true, plugins: { legend: { display: datasets.length > 1 } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f0f4f8' }, beginAtZero: true } } }
+  });
+}
+
+function doughnutChart(id, labels, data, colors) {
+  return new Chart(document.getElementById(id), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+  });
+}
+
+function initOverview() {
+  barChart('outagesChart',
+    ['18 Sep','19 Sep','20 Sep','21 Sep','22 Sep','23 Sep','24 Sep','25 Sep'],
+    [
+      { label: 'New', data: [12,18,9,22,15,11,19,14], backgroundColor: TEAL, borderRadius: 4 },
+      { label: 'Resolved', data: [8,14,7,18,12,9,16,11], backgroundColor: '#b2f0e0', borderRadius: 4 }
+    ]
+  );
+  initMiniMap();
+}
+
+function initWorkforce() {
+  barChart('workloadChart',
+    ['Block X','Block S','Block GG','Block AA','Block R','Block CC'],
+    [{ label: 'Electricity Jobs', data: [8, 6, 5, 4, 3, 2], backgroundColor: [RED,RED,ORANGE,ORANGE,ORANGE,BLUE], borderRadius: 4 }]
+  );
+  barChart('responseChart',
+    ['J. Dlamini','T. Mokoena','P. Nkosi','M. Sithole','L. Khumalo'],
+    [{ label: 'Avg Response (min)', data: [22, 28, 18, 31, 20], backgroundColor: TEAL, borderRadius: 4 }]
+  );
+}
+
+function initPerformance() {
+  lineChart('kpiChart', MONTHS,
+    [
+      { label: 'Avg Response (min)', data: [35,32,30,28,26,25,24,24,24], borderColor: TEAL, backgroundColor: 'rgba(26,188,156,.1)', fill: true, tension: .4 },
+      { label: 'Avg Repair (min)', data: [180,170,160,155,145,140,135,132,130], borderColor: ORANGE, backgroundColor: 'rgba(243,156,18,.08)', fill: true, tension: .4 }
+    ]
+  );
+  doughnutChart('reportsChart', ['Resolved','Pending','Escalated'], [94, 4, 2], [TEAL, ORANGE, RED]);
+}
+
+function initPredictive() {
+  barChart('riskChart',
+    ['Block X','Block S','Block GG','Block AA','Block R','Block CC','Block DD'],
+    [{ label: 'Electricity Risk Score', data: [92, 87, 78, 74, 68, 55, 38], backgroundColor: [RED,RED,RED,ORANGE,ORANGE,ORANGE,BLUE], borderRadius: 4 }]
+  );
+}
+
+function initAnalytics() {
+  barChart('areaChart',
+    ['Block X','Block S','Block GG','Block AA','Block R','Block CC','Block DD'],
+    [{ label: 'Electricity Outages', data: [22, 18, 15, 12, 10, 8, 4], backgroundColor: TEAL, borderRadius: 4 }]
+  );
+  doughnutChart('causeChart',
+    ['Transformer Fault','Cable Damage','Overload','Substation Trip','Meter Fault','Weather'],
+    [32, 24, 18, 14, 8, 4],
+    [RED, ORANGE, PURPLE, BLUE, TEAL, '#94a3b8']
+  );
+  lineChart('trendChart', MONTHS,
+    [{ label: 'Electricity Outages', data: [45,52,38,61,47,55,42,49,47], borderColor: TEAL, backgroundColor: 'rgba(26,188,156,.1)', fill: true, tension: .4 }]
+  );
+  barChart('teamChart',
+    ['J. Dlamini','T. Mokoena','P. Nkosi','M. Sithole','L. Khumalo'],
+    [
+      { label: 'Jobs Resolved', data: [18, 14, 16, 12, 15], backgroundColor: TEAL, borderRadius: 4 },
+      { label: 'Avg Repair (min)', data: [95, 110, 80, 120, 88], backgroundColor: ORANGE, borderRadius: 4 }
+    ]
+  );
+}
+
+initSection('overview');
+
+// ── AI DISPATCH ──────────────────────────────────────────────
+const BLOCKS = ['Block X','Block S','Block GG','Block AA','Block R','Block CC','Block H','Block F','Block BB','Block DD'];
+const FREQ   = [22, 18, 15, 12, 10, 8, 7, 6, 4, 3]; // historical outage counts
+
+const AI_TECHNICIANS = [
+  { name: 'P. Nkosi',   area: 'Block BB', jobs: 0, lat: -25.5310, lng: 28.0660 },
+  { name: 'L. Khumalo', area: 'Block GG', jobs: 0, lat: -25.5255, lng: 28.0805 },
+  { name: 'J. Dlamini', area: 'Block X',  jobs: 1, lat: -25.5055, lng: 28.0755 },
+  { name: 'M. Sithole', area: 'Block F',  jobs: 1, lat: -25.5405, lng: 28.1105 },
+  { name: 'T. Mokoena', area: 'Block S',  jobs: 1, lat: -25.5185, lng: 28.1025 },
+];
+
+const UNASSIGNED_OUTAGES = [
+  { id: '#OT-1060', block: 'Block X',  freq: 22, priority: 'Critical', lat: -25.5050, lng: 28.0750 },
+  { id: '#OT-1061', block: 'Block S',  freq: 18, priority: 'Critical', lat: -25.5180, lng: 28.1020 },
+  { id: '#OT-1062', block: 'Block GG', freq: 15, priority: 'High',     lat: -25.5250, lng: 28.0800 },
+  { id: '#OT-1063', block: 'Block AA', freq: 12, priority: 'High',     lat: -25.5150, lng: 28.1150 },
+  { id: '#OT-1064', block: 'Block R',  freq: 10, priority: 'Medium',   lat: -25.5290, lng: 28.0700 },
+  { id: '#OT-1065', block: 'Block CC', freq: 8,  priority: 'Medium',   lat: -25.5350, lng: 28.0950 },
+];
+
+function initDispatch() {
+  barChart('freqChart', BLOCKS, [
+    { label: 'Outage Frequency', data: FREQ,
+      backgroundColor: FREQ.map(v => v >= 15 ? RED : v >= 8 ? ORANGE : TEAL),
+      borderRadius: 4 }
+  ]);
+}
+
+function dist(a, b) {
+  return Math.sqrt(Math.pow(a.lat - b.lat, 2) + Math.pow(a.lng - b.lng, 2));
+}
+
+function runAIDispatch() {
+  const btn = document.getElementById('btnRunAI');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analysing...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    // Sort outages by frequency desc (highest-risk first)
+    const sorted = [...UNASSIGNED_OUTAGES].sort((a, b) => b.freq - a.freq);
+    // Available technicians sorted by jobs asc then proximity
+    const available = [...AI_TECHNICIANS].filter(t => t.jobs < 2);
+
+    const assignments = sorted.map((outage, i) => {
+      // Score each technician: lower jobs + closer = better
+      const scored = available.map(t => ({
+        tech: t,
+        score: t.jobs * 10 + dist(t, outage) * 100
+      })).sort((a, b) => a.score - b.score);
+      const best = scored[i % scored.length];
+      return { outage, tech: best.tech };
+    });
+
+    const html = `<table class="data-table">
+      <thead><tr><th>Outage</th><th>Block</th><th>Freq (90d)</th><th>Priority</th><th>AI Recommended Technician</th><th>Reason</th><th>Action</th></tr></thead>
+      <tbody>${assignments.map(a => `
+        <tr>
+          <td>${a.outage.id}</td>
+          <td>${a.outage.block}</td>
+          <td><b>${a.outage.freq}</b> outages</td>
+          <td><span class="badge ${a.outage.priority === 'Critical' ? 'red' : a.outage.priority === 'High' ? 'orange' : 'green'}">${a.outage.priority}</span></td>
+          <td><b>${a.tech.name}</b></td>
+          <td style="font-size:11px;color:var(--text-muted)">Nearest available · ${a.tech.jobs} active job(s)</td>
+          <td><button class="btn-primary sm" onclick="confirmDispatch(this,'${a.outage.id}','${a.tech.name}')">Dispatch</button></td>
+        </tr>`).join('')}
+      </tbody></table>`;
+
+    document.getElementById('aiResults').innerHTML = html;
+    btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Re-run AI';
+    btn.disabled = false;
+  }, 1800);
+}
+
+function confirmDispatch(btn, outageId, techName) {
+  btn.textContent = '\u2713 Dispatched';
+  btn.style.background = 'var(--green)';
+  btn.disabled = true;
+  document.getElementById('ai-unassigned').textContent =
+    Math.max(0, parseInt(document.getElementById('ai-unassigned').textContent) - 1);
+}
+
+function mergeDupe(btn) {
+  btn.textContent = '\u2713 Merged';
+  btn.style.background = 'var(--green)';
+  btn.disabled = true;
+  document.getElementById('ai-dupes').textContent =
+    Math.max(0, parseInt(document.getElementById('ai-dupes').textContent) - 1);
+}
+
+// ── LIVE TRACKING ─────────────────────────────────────────────
+let trackingMapInit = false;
+function initTracking() {
+  if (trackingMapInit) return;
+  trackingMapInit = true;
+  const map = L.map('trackingMap').setView(SOSH, 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '\u00a9 OpenStreetMap' }).addTo(map);
+
+  const techColors = { 'On-Site': TEAL, 'En Route': ORANGE, 'Available': '#1abc9c' };
+  const liveTeam = [
+    { lat: -25.5055, lng: 28.0755, name: 'J. Dlamini', status: 'On-Site',   job: '#OT-1042 — Block X' },
+    { lat: -25.5185, lng: 28.1025, name: 'T. Mokoena', status: 'En Route',  job: '#OT-1038 — Block S' },
+    { lat: -25.5405, lng: 28.1105, name: 'M. Sithole', status: 'En Route',  job: '#OT-1035 — Block F' },
+    { lat: -25.5255, lng: 28.0805, name: 'L. Khumalo', status: 'On-Site',   job: '#OT-1047 — Block GG' },
+    { lat: -25.5310, lng: 28.0660, name: 'P. Nkosi',   status: 'On-Site',   job: '#OT-1055 — Block AA' },
+  ];
+
+  liveTeam.forEach(t => {
+    const color = techColors[t.status] || BLUE;
+    const icon = L.divIcon({
+      html: `<div style="background:${color};color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">${t.name.split(' ')[1][0]}${t.name.split(' ')[0][0]}</div>`,
+      className: '', iconSize: [32, 32]
+    });
+    L.marker([t.lat, t.lng], { icon })
+      .bindPopup(`<b>\u{1F477} ${t.name}</b><br/>${t.status}<br/>${t.job}`)
+      .addTo(map);
+  });
+
+  // Outage pins
+  outages.forEach(o => {
+    L.circleMarker([o.lat, o.lng], { radius: 7, color: o.color, fillColor: o.color, fillOpacity: .7, weight: 2 })
+      .bindPopup(`<b>${o.label}</b>`).addTo(map);
+  });
+
+  // Simulate movement every 5s
+  setInterval(() => {
+    const feed = document.getElementById('liveFeed');
+    if (!feed) return;
+    const msgs = [
+      'J. Dlamini — Repair 80% complete · Block X',
+      'T. Mokoena — Arrived on-site · Block S',
+      'M. Sithole — ETA 3 min · Block F',
+    ];
+    const item = document.createElement('div');
+    item.className = 'feed-item';
+    item.innerHTML = `<div class="feed-dot teal"></div><div><div class="feed-title">${msgs[Math.floor(Math.random()*msgs.length)]}</div><div class="feed-time">Just now</div></div>`;
+    feed.prepend(item);
+    if (feed.children.length > 8) feed.lastChild.remove();
+  }, 5000);
+}

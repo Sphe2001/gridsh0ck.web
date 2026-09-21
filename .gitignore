@@ -1,0 +1,11 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+
+# Local scratch
+*.log
+
+# Design reference screenshots (third-party UI, not part of the site)
+Screenshot*.png
