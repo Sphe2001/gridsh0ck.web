@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — PowerPulse</title>
+  <meta name="description" content="Create a prototype PowerPulse account — no real credentials are stored."/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="auth.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="auth-body">
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <a href="index.html" class="home-logo">
+        <div class="logo-icon"><i class="fa-solid fa-city"></i></div>
+        <span>PowerPulse</span>
+      </a>
+      <h2>Join the connected outage platform for the City of Tshwane.</h2>
+      <p>One account, routed to the right portal for how you'll use PowerPulse.</p>
+      <div class="auth-brand-list">
+        <div><i class="fa-solid fa-house"></i> Residents report and track outages from the Citizen Portal.</div>
+        <div><i class="fa-solid fa-bolt"></i> Electricians manage assigned jobs and repair notes in the field.</div>
+        <div><i class="fa-solid fa-gauge"></i> Municipal staff run AI dispatch, tracking and analytics.</div>
+      </div>
+      <div class="auth-brand-badge"><i class="fa-solid fa-flask"></i> Prototype build</div>
+    </div>
+
+    <div class="auth-form-panel">
+      <a href="index.html" class="auth-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+      <h1>Create your account</h1>
+      <div class="auth-sub">It only takes a minute — this is a demo, so any details work.</div>
+
+      <form data-auth-form data-loading-label="Creating account...">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input class="form-input" type="text" name="name" required placeholder="e.g. Thabo Mokoena"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-input" type="email" name="email" required placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>I am a...</label>
+          <select class="form-input" name="role" required>
+            <option value="citizen" selected>Resident / Citizen</option>
+            <option value="electrician">Electrician / Field Technician</option>
+            <option value="municipal">Municipal Operations Staff</option>
+          </select>
+        </div>
+        <div class="auth-row-2">
+          <div class="form-group">
+            <label>Password</label>
+            <input class="form-input" type="password" name="password" required placeholder="••••••••" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input class="form-input" type="password" name="confirmPassword" required placeholder="••••••••" autocomplete="off"/>
+          </div>
+        </div>
+        <div class="auth-disclaimer">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>Prototype only — no account is actually created and no credentials are stored or verified. Submitting simply takes you to the matching portal.</div>
+        </div>
+        <button class="btn-primary full-btn" type="submit"><i class="fa-solid fa-user-plus"></i> Sign Up</button>
+      </form>
+
+      <div class="auth-switch">Already have an account? <a href="signin.html">Sign In</a></div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>

@@ -1,415 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PowerPulse — City of Tshwane</title>
-  <meta name="description" content="PowerPulse — municipal outage monitoring and AI dispatch dashboard for the City of Tshwane (Soshanguve)."/>
+  <title>PowerPulse — Smart Outage Management for the City of Tshwane</title>
+  <meta name="description" content="PowerPulse connects residents, electricians, dispatchers and municipal teams on one real-time outage management platform for the City of Tshwane."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="home.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 </head>
-<body>
-  <div class="layout">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-icon"><i class="fa-solid fa-city"></i></div>
-        <span>PowerPulse</span>
-      </div>
-      <div class="nav-section-label">OPERATIONS</div>
-      <nav>
-        <a href="#" class="nav-item active" data-section="overview"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-        <a href="#" class="nav-item" data-section="map"><i class="fa-solid fa-map-location-dot"></i> Live Map</a>
-        <a href="#" class="nav-item" data-section="dispatch"><i class="fa-solid fa-robot"></i> AI Dispatch</a>
-        <a href="#" class="nav-item" data-section="tracking"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a>
-        <a href="#" class="nav-item" data-section="workforce"><i class="fa-solid fa-hard-hat"></i> Workforce</a>
+<body class="home-body">
+
+  <!-- NAV -->
+  <header class="home-nav">
+    <a href="index.html" class="home-logo">
+      <div class="logo-icon"><i class="fa-solid fa-city"></i></div>
+      <span>PowerPulse</span>
+    </a>
+    <button class="home-nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="home-nav-menu" id="navMenu">
+      <nav class="home-nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact Us</a>
       </nav>
-      <div class="nav-section-label">INSIGHTS</div>
-      <nav>
-        <a href="#" class="nav-item" data-section="performance"><i class="fa-solid fa-chart-line"></i> Performance</a>
-        <a href="#" class="nav-item" data-section="predictive"><i class="fa-solid fa-brain"></i> Predictive Risk</a>
-        <a href="#" class="nav-item" data-section="maintenance"><i class="fa-solid fa-wrench"></i> Maintenance</a>
-        <a href="#" class="nav-item" data-section="analytics"><i class="fa-solid fa-chart-bar"></i> Analytics</a>
-      </nav>
-      <div class="sidebar-bottom">
-        <a href="citizen.html" class="nav-item"><i class="fa-solid fa-house"></i> Citizen Portal</a>
-        <a href="technician.html" class="nav-item"><i class="fa-solid fa-hard-hat"></i> Technician</a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
-        <div class="user-profile">
-          <div class="avatar">MO</div>
-          <div>
-            <div class="user-name">Muni Ops</div>
-            <div class="user-email">admin@municipality.gov</div>
-          </div>
+      <div class="home-nav-actions">
+        <a href="signin.html" class="btn-ghost-light">Sign In</a>
+        <a href="signup.html" class="btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME / HERO -->
+  <section id="home" class="hero">
+    <div class="hero-badge-pill"><i class="fa-solid fa-flask"></i> Prototype — simulated data, not connected to live City of Tshwane systems</div>
+    <h1>See every outage. Dispatch the right crew.<br/>Keep residents informed — in real time.</h1>
+    <p class="hero-sub">PowerPulse connects residents, electricians, dispatchers and municipal operations teams on a single platform — from the moment an outage is reported to the moment it's resolved.</p>
+    <div class="hero-cta">
+      <a href="signup.html" class="btn-primary lg"><i class="fa-solid fa-user-plus"></i> Get Started — Sign Up</a>
+      <a href="signin.html" class="btn-secondary-dark lg"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+    </div>
+  </section>
+
+  <!-- PORTALS -->
+  <section class="portals-section">
+    <div class="section-heading">
+      <div class="eyebrow">Explore the prototype</div>
+      <h2>One platform, three portals</h2>
+      <p>No account needed to look around — jump straight into any portal.</p>
+    </div>
+    <div class="portals-grid">
+      <a href="citizen.html" class="portal-card">
+        <div class="portal-icon teal"><i class="fa-solid fa-house"></i></div>
+        <h3>Citizen Portal</h3>
+        <p>Report an outage, track its status and get notified the moment it's resolved.</p>
+        <span class="portal-link">Open Citizen Portal <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      <a href="electrician.html" class="portal-card">
+        <div class="portal-icon orange"><i class="fa-solid fa-bolt"></i></div>
+        <h3>Electrician Portal</h3>
+        <p>View assigned jobs, log repair notes and track your route in the field.</p>
+        <span class="portal-link">Open Electrician Portal <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      <a href="dashboard.html" class="portal-card">
+        <div class="portal-icon purple"><i class="fa-solid fa-gauge"></i></div>
+        <h3>Municipal Dashboard</h3>
+        <p>AI dispatch, live GPS tracking, predictive risk flagging and analytics.</p>
+        <span class="portal-link">Open Dashboard <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about-section">
+    <div class="section-heading">
+      <div class="eyebrow">About PowerPulse</div>
+      <h2>Why we built this</h2>
+      <p>A single connected system for the whole outage lifecycle — not another disconnected spreadsheet or call centre.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>The City of Tshwane needs a single, real-time system to manage service outages from the moment they're reported until they're resolved. Today, information can go stale because residents, dispatchers, electricians and municipal teams don't always share one connected platform — which leads to delays, poor communication and repairs that are hard to track.</p>
+        <p>PowerPulse is a working prototype of that connected platform. It takes an outage from report to resolution, and turns every closed job into historical data the City can use to spot recurring problems — before they escalate into costly, repeat failures.</p>
+      </div>
+      <div class="about-flow">
+        <div class="flow-step"><span>1</span> Report outage</div>
+        <div class="flow-step"><span>2</span> Verify &amp; deduplicate</div>
+        <div class="flow-step"><span>3</span> Prioritise</div>
+        <div class="flow-step"><span>4</span> Dispatch &amp; assign</div>
+        <div class="flow-step"><span>5</span> Track &amp; repair</div>
+        <div class="flow-step"><span>6</span> Notify customer</div>
+        <div class="flow-step"><span>7</span> Close &amp; analyse</div>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fa-solid fa-robot"></i>
+        <h4>AI-Assisted Dispatch</h4>
+        <p>Matches new outages to the nearest available crew by workload and location.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <h4>Live GPS Tracking</h4>
+        <p>Follow a technician's journey from depot to on-site, in real time.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-chart-line"></i>
+        <h4>Historical Risk Flagging</h4>
+        <p>Areas with a 90-day outage rate above 50% are automatically flagged for the City.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-bell"></i>
+        <h4>Resident Notifications</h4>
+        <p>Automatic updates when a technician is on the way, nearby, or the fault is fixed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="section-heading">
+      <div class="eyebrow">Contact Us</div>
+      <h2>Get in touch</h2>
+      <p>This is a prototype — messages sent below are not delivered anywhere.</p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form card" id="contactForm">
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-input" type="text" required placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-input" type="email" required placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea class="form-input" rows="4" required placeholder="How can we help?"></textarea>
+        </div>
+        <button class="btn-primary full-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        <div class="form-note" id="contactNote" style="display:none;"></div>
+      </form>
+      <div class="contact-info">
+        <div class="info-row">
+          <i class="fa-solid fa-circle-info"></i>
+          <div><b>Prototype note</b><p>PowerPulse is a demonstration built for a City of Tshwane outage-management challenge. It is not an official City of Tshwane platform and isn't connected to live municipal systems.</p></div>
+        </div>
+        <div class="info-row">
+          <i class="fa-solid fa-diagram-project"></i>
+          <div><b>One system, every role</b><p>The Citizen, Electrician and Municipal Dashboard portals linked above are all part of this same prototype — try any of them.</p></div>
         </div>
       </div>
-    </aside>
+    </div>
+  </section>
 
-    <!-- MAIN -->
-    <main class="main">
-      <!-- TOPBAR -->
-      <div class="topbar">
-        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search outages, technicians..."/></div>
-        <div class="topbar-right">
-          <span class="date-range"><i class="fa-regular fa-calendar"></i> Last 30 days</span>
-          <button class="btn-export"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
-        </div>
-      </div>
+  <!-- FOOTER -->
+  <footer class="home-footer">
+    <div>© 2026 PowerPulse — Prototype for a City of Tshwane Smart Outage Management challenge. Not an official City of Tshwane service.</div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="signin.html">Sign In</a>
+      <a href="signup.html">Sign Up</a>
+    </div>
+  </footer>
 
-      <!-- SECTIONS -->
-      <div id="section-overview" class="section active">
-        <!-- Hero Banner -->
-        <div class="hero-banner">
-          <div>
-            <div class="hero-label">Active Outages — City of Tshwane (Soshanguve)</div>
-            <div class="hero-value">47 <span class="hero-badge bad">+12% <i class="fa-solid fa-arrow-up"></i></span></div>
-          </div>
-          <div class="hero-actions">
-            <button class="btn-primary" onclick="document.querySelector('[data-section=dispatch]').click()"><i class="fa-solid fa-robot"></i> AI Dispatch</button>
-            <button class="btn-secondary" onclick="document.querySelector('[data-section=tracking]').click()"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</button>
-            <button class="btn-secondary"><i class="fa-solid fa-rotate"></i> Refresh</button>
-          </div>
-        </div>
-
-        <!-- KPI Cards -->
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-icon red"><i class="fa-solid fa-bolt"></i></div>
-            <div>
-              <div class="kpi-label">Critical Electricity Outages</div>
-              <div class="kpi-value">8</div>
-              <div class="kpi-sub bad">+3 since yesterday</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon orange"><i class="fa-solid fa-clock"></i></div>
-            <div>
-              <div class="kpi-label">Avg Response Time</div>
-              <div class="kpi-value">24 min</div>
-              <div class="kpi-sub good">-6 min vs target</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon green"><i class="fa-solid fa-circle-check"></i></div>
-            <div>
-              <div class="kpi-label">Electricity Restored Today</div>
-              <div class="kpi-value">19</div>
-              <div class="kpi-sub good">SLA: 94%</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon teal"><i class="fa-solid fa-hard-hat"></i></div>
-            <div>
-              <div class="kpi-label">Electricians Active</div>
-              <div class="kpi-value">31</div>
-              <div class="kpi-sub">of 40 available</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Charts Row -->
-        <div class="charts-row">
-          <div class="card chart-card wide">
-            <div class="card-header">
-              <span><i class="fa-solid fa-chart-column"></i> Outages Over Time</span>
-              <div class="toggle-group">
-                <button class="tog active">Weekly</button>
-                <button class="tog">Daily</button>
-              </div>
-            </div>
-            <canvas id="outagesChart" height="110"></canvas>
-          </div>
-          <div class="card side-stats">
-            <div class="stat-box green-bg">
-              <div class="stat-label"><i class="fa-solid fa-circle-check"></i> Resolved</div>
-              <div class="stat-val">19</div>
-              <div class="stat-pct good">+45% <i class="fa-solid fa-arrow-up"></i></div>
-            </div>
-            <div class="stat-box red-bg">
-              <div class="stat-label"><i class="fa-solid fa-robot"></i> AI Dispatched</div>
-              <div class="stat-val">12</div>
-              <div class="stat-pct good">Today</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom Row -->
-        <div class="bottom-row">
-          <div class="card table-card">
-            <div class="card-header">
-              <span><i class="fa-solid fa-list"></i> Recent Outages</span>
-              <div class="filter-sort">
-                <button class="btn-ghost"><i class="fa-solid fa-filter"></i> Filter</button>
-                <button class="btn-ghost"><i class="fa-solid fa-sort"></i> Sort</button>
-              </div>
-            </div>
-            <table class="data-table">
-              <thead><tr><th>Area</th><th>Type</th><th>Status</th><th>Technician</th><th>Duration</th></tr></thead>
-              <tbody>
-                <tr><td>Block X</td><td>Electricity</td><td><span class="badge red">Critical</span></td><td>J. Dlamini <span class="ai-chip" style="font-size:10px;"><i class="fa-solid fa-robot"></i> AI</span></td><td>3h 20m</td></tr>
-                <tr><td>Block S</td><td>Electricity</td><td><span class="badge red">Critical</span></td><td>T. Mokoena <span class="ai-chip" style="font-size:10px;"><i class="fa-solid fa-robot"></i> AI</span></td><td>4h 30m</td></tr>
-                <tr><td>Block GG</td><td>Electricity</td><td><span class="badge orange">In Progress</span></td><td>L. Khumalo <span class="ai-chip" style="font-size:10px;"><i class="fa-solid fa-robot"></i> AI</span></td><td>1h 05m</td></tr>
-                <tr><td>Block AA</td><td>Electricity</td><td><span class="badge orange">In Progress</span></td><td>P. Nkosi <span class="ai-chip" style="font-size:10px;"><i class="fa-solid fa-robot"></i> AI</span></td><td>2h 55m</td></tr>
-                <tr><td>Block R</td><td>Electricity</td><td><span class="badge green">Resolved</span></td><td>M. Sithole</td><td>45m</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="card mini-map-card">
-            <div class="card-header"><span><i class="fa-solid fa-map-pin"></i> Outage Hotspots</span><a href="#" class="see-all" data-section="map">See All</a></div>
-            <div id="miniMap"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MAP SECTION -->
-      <div id="section-map" class="section">
-        <div class="section-title">Live Outage Map — Soshanguve</div>
-        <div class="map-toolbar">
-          <div class="toggle-group">
-            <button class="tog active" id="btnMarkers"><i class="fa-solid fa-location-dot"></i> Markers</button>
-            <button class="tog" id="btnHeatmap"><i class="fa-solid fa-fire"></i> Electricity Heatmap</button>
-            <button class="tog" id="btnBoth"><i class="fa-solid fa-layer-group"></i> Both</button>
-          </div>
-        </div>
-        <div class="card" style="padding:0;overflow:hidden;">
-          <div id="fullMap" style="height:520px;width:100%;"></div>
-        </div>
-        <div class="map-legend">
-          <span><span class="dot red"></span> Critical Electricity</span>
-          <span><span class="dot orange"></span> In Progress</span>
-          <span><span class="dot green"></span> Resolved</span>
-          <span><span class="dot blue"></span> Technician</span>
-          <span><span class="heat-swatch"></span> Electricity Heatmap</span>
-        </div>
-      </div>
-
-      <!-- WORKFORCE SECTION -->
-      <div id="section-workforce" class="section">
-        <div class="section-title">Electrician Workforce</div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-user-check"></i></div><div><div class="kpi-label">Available</div><div class="kpi-value">9</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-user-gear"></i></div><div><div class="kpi-label">AI-Assigned</div><div class="kpi-value">14</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-location-dot"></i></div><div><div class="kpi-label">On-Site</div><div class="kpi-value">8</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-clipboard-list"></i></div><div><div class="kpi-label">Pending AI Assignment</div><div class="kpi-value">2</div></div></div>
-        </div>
-        <div class="charts-row">
-          <div class="card chart-card wide">
-            <div class="card-header"><span><i class="fa-solid fa-chart-bar"></i> Workload per Team</span></div>
-            <canvas id="workloadChart" height="120"></canvas>
-          </div>
-          <div class="card" style="flex:1;min-width:220px;">
-            <div class="card-header"><span><i class="fa-solid fa-stopwatch"></i> Avg Response Time</span></div>
-            <canvas id="responseChart" height="120"></canvas>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span><i class="fa-solid fa-users"></i> Technician Status</span></div>
-          <table class="data-table">
-            <thead><tr><th>Name</th><th>Team</th><th>Status</th><th>Current Job</th><th>Avg Response</th></tr></thead>
-            <tbody>
-              <tr><td>J. Dlamini</td><td>Electrical</td><td><span class="badge orange">On-Site</span></td><td>#OT-1042 — Block X</td><td>22 min</td></tr>
-              <tr><td>T. Mokoena</td><td>Electrical</td><td><span class="badge orange">On-Site</span></td><td>#OT-1038 — Block S</td><td>28 min</td></tr>
-              <tr><td>P. Nkosi</td><td>Electrical</td><td><span class="badge orange">Assigned</span></td><td>#OT-1055 — Block AA</td><td>18 min</td></tr>
-              <tr><td>M. Sithole</td><td>Electrical</td><td><span class="badge green">Available</span></td><td>—</td><td>31 min</td></tr>
-              <tr><td>L. Khumalo</td><td>Electrical</td><td><span class="badge orange">On-Site</span></td><td>#OT-1047 — Block GG</td><td>20 min</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- PERFORMANCE SECTION -->
-      <div id="section-performance" class="section">
-        <div class="section-title">Performance Monitoring</div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-gauge-high"></i></div><div><div class="kpi-label">Avg Response</div><div class="kpi-value">24 min</div><div class="kpi-sub good">Target: 30 min ✓</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-screwdriver-wrench"></i></div><div><div class="kpi-label">Avg Repair Time</div><div class="kpi-value">2h 10m</div><div class="kpi-sub good">Target: 3h ✓</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-percent"></i></div><div><div class="kpi-label">SLA Compliance</div><div class="kpi-value">94%</div><div class="kpi-sub good">+2% vs last month</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-rotate"></i></div><div><div class="kpi-label">Repeat Outages</div><div class="kpi-value">11</div><div class="kpi-sub bad">+3 vs last month</div></div></div>
-        </div>
-        <div class="charts-row">
-          <div class="card chart-card wide">
-            <div class="card-header"><span><i class="fa-solid fa-chart-line"></i> KPI Trends</span></div>
-            <canvas id="kpiChart" height="120"></canvas>
-          </div>
-          <div class="card" style="flex:1;min-width:220px;">
-            <div class="card-header"><span><i class="fa-solid fa-chart-pie"></i> Reports vs Resolved</span></div>
-            <canvas id="reportsChart" height="120"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- PREDICTIVE SECTION -->
-      <div id="section-predictive" class="section">
-        <div class="section-title">Predictive Risk</div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-radiation"></i></div><div><div class="kpi-label">High-Risk Areas</div><div class="kpi-value">7</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-repeat"></i></div><div><div class="kpi-label">Recurring Failures</div><div class="kpi-value">12</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon purple"><i class="fa-solid fa-magnifying-glass-chart"></i></div><div><div class="kpi-label">Emerging Patterns</div><div class="kpi-value">4</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-shield-halved"></i></div><div><div class="kpi-label">Preventative Alerts</div><div class="kpi-value">9</div></div></div>
-        </div>
-        <div class="charts-row">
-          <div class="card chart-card wide">
-            <div class="card-header"><span><i class="fa-solid fa-chart-area"></i> Risk Score by Area</span></div>
-            <canvas id="riskChart" height="120"></canvas>
-          </div>
-          <div class="card" style="flex:1;min-width:220px;">
-            <div class="card-header"><span><i class="fa-solid fa-list-check"></i> Recommended Inspections</span></div>
-            <ul class="rec-list">
-              <li><span class="dot red"></span> Block X — Transformer overload risk</li>
-              <li><span class="dot red"></span> Block S — Ageing substation cables</li>
-              <li><span class="dot orange"></span> Block CC — Ageing distribution cables</li>
-              <li><span class="dot orange"></span> Block R — Recurring transformer trips</li>
-              <li><span class="dot orange"></span> Block DD — Voltage fluctuation pattern</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- MAINTENANCE SECTION -->
-      <div id="section-maintenance" class="section">
-        <div class="section-title">Maintenance Planning</div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-calendar-check"></i></div><div><div class="kpi-label">Upcoming (7 days)</div><div class="kpi-value">14</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-calendar-xmark"></i></div><div><div class="kpi-label">Overdue</div><div class="kpi-value">6</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="kpi-label">High-Risk Assets</div><div class="kpi-value">9</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-clipboard-check"></i></div><div><div class="kpi-label">Completed This Month</div><div class="kpi-value">28</div></div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span><i class="fa-solid fa-wrench"></i> Maintenance Schedule</span></div>
-          <table class="data-table">
-            <thead><tr><th>Asset</th><th>Area</th><th>Type</th><th>Due Date</th><th>Priority</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>Transformer T-12</td><td>Block X</td><td>Inspection</td><td>2026-09-25</td><td><span class="badge red">High</span></td><td><span class="badge orange">Scheduled</span></td></tr>
-              <tr><td>Substation Cable SC-03</td><td>Block S</td><td>Replacement</td><td>2026-09-22</td><td><span class="badge red">High</span></td><td><span class="badge red">Overdue</span></td></tr>
-              <tr><td>Distribution Line DL-07</td><td>Block CC</td><td>Inspection</td><td>2026-09-28</td><td><span class="badge orange">Medium</span></td><td><span class="badge orange">Scheduled</span></td></tr>
-              <tr><td>Meter Bank MB-11</td><td>Block R</td><td>Testing</td><td>2026-09-30</td><td><span class="badge orange">Medium</span></td><td><span class="badge green">In Progress</span></td></tr>
-              <tr><td>Substation SS-04</td><td>Block S</td><td>Testing</td><td>2026-10-02</td><td><span class="badge green">Low</span></td><td><span class="badge green">Scheduled</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ANALYTICS SECTION -->
-      <div id="section-analytics" class="section">
-        <div class="section-title">Analytics &amp; Trends</div>
-        <div class="charts-row">
-          <div class="card chart-card" style="flex:1;">
-            <div class="card-header"><span><i class="fa-solid fa-chart-bar"></i> Outages by Area</span></div>
-            <canvas id="areaChart" height="140"></canvas>
-          </div>
-          <div class="card chart-card" style="flex:1;">
-            <div class="card-header"><span><i class="fa-solid fa-chart-pie"></i> Electricity Outages by Cause</span></div>
-            <canvas id="causeChart" height="140"></canvas>
-
-          </div>
-        </div>
-        <div class="charts-row">
-          <div class="card chart-card" style="flex:1;">
-            <div class="card-header"><span><i class="fa-solid fa-chart-line"></i> Outages Over Time</span></div>
-            <canvas id="trendChart" height="130"></canvas>
-          </div>
-          <div class="card chart-card" style="flex:1;">
-            <div class="card-header"><span><i class="fa-solid fa-users"></i> Team Performance</span></div>
-            <canvas id="teamChart" height="130"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI DISPATCH SECTION -->
-      <div id="section-dispatch" class="section">
-        <div class="section-title"><i class="fa-solid fa-robot" style="color:var(--primary)"></i> AI Dispatch Engine</div>
-        <div class="ai-banner">
-          <div class="ai-banner-left">
-            <div class="ai-icon"><i class="fa-solid fa-brain"></i></div>
-            <div>
-              <div class="ai-title">PowerPulse AI is analysing outage patterns</div>
-              <div class="ai-sub">Scanning historical data, technician locations, workload and outage frequency to recommend optimal assignments.</div>
-            </div>
-          </div>
-          <button class="btn-primary" id="btnRunAI" onclick="runAIDispatch()"><i class="fa-solid fa-play"></i> Run AI Assignment</button>
-        </div>
-
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-bolt"></i></div><div><div class="kpi-label">Unassigned Outages</div><div class="kpi-value" id="ai-unassigned">6</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-user-check"></i></div><div><div class="kpi-label">Available Technicians</div><div class="kpi-value" id="ai-available">4</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon purple"><i class="fa-solid fa-fire"></i></div><div><div class="kpi-label">Highest-Risk Area</div><div class="kpi-value" style="font-size:16px;">Block X</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-rotate"></i></div><div><div class="kpi-label">Duplicate Reports Detected</div><div class="kpi-value" id="ai-dupes">3</div></div></div>
-        </div>
-
-        <div class="charts-row">
-          <div class="card" style="flex:2;">
-            <div class="card-header"><span><i class="fa-solid fa-chart-bar"></i> Outage Frequency by Block (Last 90 Days)</span><span class="ai-chip"><i class="fa-solid fa-brain"></i> AI Input</span></div>
-            <canvas id="freqChart" height="110"></canvas>
-          </div>
-          <div class="card" style="flex:1;min-width:220px;">
-            <div class="card-header"><span><i class="fa-solid fa-users"></i> Technician Availability</span></div>
-            <div class="tech-avail-list" id="techAvailList">
-              <div class="tech-row available"><div class="tech-dot green"></div><div><div class="tech-name">P. Nkosi</div><div class="tech-meta">Electrical · Block BB area · 0 jobs</div></div><span class="badge green">Available</span></div>
-              <div class="tech-row available"><div class="tech-dot green"></div><div><div class="tech-name">L. Khumalo</div><div class="tech-meta">Electrical · Block GG area · 0 jobs</div></div><span class="badge green">Available</span></div>
-              <div class="tech-row"><div class="tech-dot orange"></div><div><div class="tech-name">J. Dlamini</div><div class="tech-meta">Electrical · Block X · 1 job</div></div><span class="badge orange">Busy</span></div>
-              <div class="tech-row"><div class="tech-dot orange"></div><div><div class="tech-name">M. Sithole</div><div class="tech-meta">Electrical · Block F · 1 job</div></div><span class="badge orange">Busy</span></div>
-              <div class="tech-row"><div class="tech-dot orange"></div><div><div class="tech-name">T. Mokoena</div><div class="tech-meta">Electrical · Block S · 1 job</div></div><span class="badge orange">Busy</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="aiResultsCard">
-          <div class="card-header"><span><i class="fa-solid fa-robot"></i> AI Assignment Recommendations</span><span class="ai-chip"><i class="fa-solid fa-sparkles"></i> Auto-generated</span></div>
-          <div id="aiResults"><div style="color:var(--text-muted);font-size:13px;padding:12px 0;">Click <b>Run AI Assignment</b> above to generate recommendations based on outage frequency, technician proximity and workload.</div></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><span><i class="fa-solid fa-copy"></i> Duplicate Report Detection</span></div>
-          <table class="data-table">
-            <thead><tr><th>Original</th><th>Duplicate</th><th>Area</th><th>Similarity</th><th>Action</th></tr></thead>
-            <tbody>
-              <tr><td>#RPT-0091</td><td>#RPT-0093</td><td>Block X — Electricity</td><td><span class="badge green">98% match</span></td><td><button class="btn-primary sm" onclick="mergeDupe(this)">Merge</button></td></tr>
-              <tr><td>#RPT-0085</td><td>#RPT-0087</td><td>Block S — Electricity</td><td><span class="badge green">94% match</span></td><td><button class="btn-primary sm" onclick="mergeDupe(this)">Merge</button></td></tr>
-              <tr><td>#RPT-0078</td><td>#RPT-0079</td><td>Block GG — Electricity</td><td><span class="badge orange">81% match</span></td><td><button class="btn-primary sm" onclick="mergeDupe(this)">Merge</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- LIVE TRACKING SECTION -->
-      <div id="section-tracking" class="section">
-        <div class="section-title"><i class="fa-solid fa-satellite-dish" style="color:var(--primary)"></i> Real-Time Technician Tracking</div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-location-dot"></i></div><div><div class="kpi-label">Technicians On-Site</div><div class="kpi-value">3</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-car"></i></div><div><div class="kpi-label">En Route</div><div class="kpi-value">2</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-user-check"></i></div><div><div class="kpi-label">Available</div><div class="kpi-value">2</div></div></div>
-          <div class="kpi-card"><div class="kpi-icon purple"><i class="fa-solid fa-bell"></i></div><div><div class="kpi-label">Customer Alerts Sent</div><div class="kpi-value">14</div></div></div>
-        </div>
-        <div class="bottom-row">
-          <div class="card" style="flex:1;padding:0;overflow:hidden;">
-            <div id="trackingMap" style="height:420px;"></div>
-          </div>
-          <div class="card" style="min-width:280px;">
-            <div class="card-header"><span><i class="fa-solid fa-list"></i> Live Status Feed</span></div>
-            <div class="live-feed" id="liveFeed">
-              <div class="feed-item"><div class="feed-dot green"></div><div><div class="feed-title">J. Dlamini — On-Site</div><div class="feed-sub">Block X · #OT-1042 · Repair in progress</div><div class="feed-time">Now</div></div></div>
-              <div class="feed-item"><div class="feed-dot orange"></div><div><div class="feed-title">T. Mokoena — En Route</div><div class="feed-sub">Block S · #OT-1038 · ETA 8 min</div><div class="feed-time">2 min ago</div></div></div>
-              <div class="feed-item"><div class="feed-dot orange"></div><div><div class="feed-title">M. Sithole — En Route</div><div class="feed-sub">Block F · #OT-1035 · ETA 12 min</div><div class="feed-time">5 min ago</div></div></div>
-              <div class="feed-item"><div class="feed-dot teal"></div><div><div class="feed-title">L. Khumalo — On-Site</div><div class="feed-sub">Block GG · #OT-1047 · Diagnosing fault</div><div class="feed-time">10 min ago</div></div></div>
-              <div class="feed-item"><div class="feed-dot teal"></div><div><div class="feed-title">P. Nkosi — On-Site</div><div class="feed-sub">Block AA · #OT-1055 · Cable replacement</div><div class="feed-time">15 min ago</div></div></div>
-            </div>
-            <div class="card-header" style="margin-top:16px;"><span><i class="fa-solid fa-bell"></i> Customer Notifications Sent</span></div>
-            <div class="notif-log">
-              <div class="nl-item"><i class="fa-solid fa-message" style="color:var(--primary)"></i><div><div class="nl-text">SMS: Technician on the way — Block X resident</div><div class="nl-time">08:32</div></div></div>
-              <div class="nl-item"><i class="fa-solid fa-message" style="color:var(--orange)"></i><div><div class="nl-text">SMS: Technician nearby (5 min) — Block S resident</div><div class="nl-time">09:01</div></div></div>
-              <div class="nl-item"><i class="fa-solid fa-message" style="color:var(--green)"></i><div><div class="nl-text">SMS: Issue resolved — Block BB resident</div><div class="nl-time">09:45</div></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-  <script src="app.js"></script>
+  <script src="home.js"></script>
 </body>
 </html>

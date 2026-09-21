@@ -48,7 +48,7 @@ Chart.defaults.font.family = "'Segoe UI', sans-serif";
 Chart.defaults.font.size = 12;
 Chart.defaults.color = '#7a8fa6';
 
-const TEAL = '#1abc9c', ORANGE = '#f39c12', RED = '#e74c3c', BLUE = '#0ea5e9', PURPLE = '#8b5cf6';
+const TEAL = '#1abc9c', ORANGE = '#f39c12', RED = '#e74c3c', BLUE = '#0ea5e9', PURPLE = '#8b5cf6', YELLOW = '#eab308';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'];
 
 // Soshanguve centre
@@ -96,7 +96,7 @@ const heatPoints = [
   [-25.5450, 28.0880, 0.2], [-25.5100, 28.0980, 0.4], [-25.5220, 28.1100, 0.3],
 ];
 
-const technicians = [
+const electricians = [
   { lat: -25.5055, lng: 28.0755, label: 'J. Dlamini — On-Site (Block X)' },
   { lat: -25.5185, lng: 28.1025, label: 'T. Mokoena — Assigned (Block S)' },
   { lat: -25.5310, lng: 28.0660, label: 'P. Nkosi — Available' },
@@ -127,7 +127,7 @@ function initMiniMap() {
 let fullMapObj = null;
 let markerLayerGroup = null;
 let heatLayer = null;
-let techLayerGroup = null;
+let electricianLayerGroup = null;
 
 function initFullMap() {
   const map = L.map('fullMap').setView(SOSH, 13);
@@ -142,12 +142,12 @@ function initFullMap() {
       .addTo(markerLayerGroup);
   });
 
-  // Technician layer
-  techLayerGroup = L.layerGroup();
-  technicians.forEach(t => {
+  // Electrician layer
+  electricianLayerGroup = L.layerGroup();
+  electricians.forEach(t => {
     L.marker([t.lat, t.lng], { icon: circleIcon(BLUE, 16) })
       .bindPopup(`<b>👷 ${t.label}</b>`)
-      .addTo(techLayerGroup);
+      .addTo(electricianLayerGroup);
   });
 
   // Heatmap layer
@@ -156,24 +156,24 @@ function initFullMap() {
     gradient: { 0.2: '#0000ff', 0.4: '#00cfff', 0.6: '#00ff88', 0.8: '#ffff00', 1.0: '#ff0000' }
   });
 
-  // Default: markers + technicians
+  // Default: markers + electricians
   markerLayerGroup.addTo(map);
-  techLayerGroup.addTo(map);
+  electricianLayerGroup.addTo(map);
 
   // Toolbar buttons
   document.getElementById('btnMarkers').addEventListener('click', () => {
     map.addLayer(markerLayerGroup);
-    map.addLayer(techLayerGroup);
+    map.addLayer(electricianLayerGroup);
     map.removeLayer(heatLayer);
   });
   document.getElementById('btnHeatmap').addEventListener('click', () => {
     map.removeLayer(markerLayerGroup);
-    map.removeLayer(techLayerGroup);
+    map.removeLayer(electricianLayerGroup);
     map.addLayer(heatLayer);
   });
   document.getElementById('btnBoth').addEventListener('click', () => {
     map.addLayer(markerLayerGroup);
-    map.addLayer(techLayerGroup);
+    map.addLayer(electricianLayerGroup);
     map.addLayer(heatLayer);
   });
 }
@@ -234,11 +234,42 @@ function initPerformance() {
   doughnutChart('reportsChart', ['Resolved','Pending','Escalated'], [94, 4, 2], [TEAL, ORANGE, RED]);
 }
 
+const PRIORITY_COLORS = { critical: RED, medium: ORANGE, low: YELLOW, normal: BLUE };
+
 function initPredictive() {
   barChart('riskChart',
-    ['Block X','Block S','Block GG','Block AA','Block R','Block CC','Block DD'],
-    [{ label: 'Electricity Risk Score', data: [92, 87, 78, 74, 68, 55, 38], backgroundColor: [RED,RED,RED,ORANGE,ORANGE,ORANGE,BLUE], borderRadius: 4 }]
+    TSHWANE_PRIORITY_AREAS.map(a => a.area),
+    [{
+      label: 'Outage Rate % (90d)',
+      data: TSHWANE_PRIORITY_AREAS.map(a => a.ratePct),
+      backgroundColor: TSHWANE_PRIORITY_AREAS.map(a => PRIORITY_COLORS[a.level]),
+      borderRadius: 4
+    }]
   );
+
+  const counts = { critical: 0, medium: 0, low: 0, flagged: 0 };
+  TSHWANE_PRIORITY_AREAS.forEach(a => {
+    if (a.level !== 'normal') counts[a.level]++;
+    if (a.flagged) counts.flagged++;
+  });
+  document.getElementById('pr-critical').textContent = counts.critical;
+  document.getElementById('pr-medium').textContent = counts.medium;
+  document.getElementById('pr-low').textContent = counts.low;
+  document.getElementById('pr-flagged').textContent = counts.flagged;
+
+  document.getElementById('pr-priority-table').innerHTML = TSHWANE_PRIORITY_AREAS.map(a => `
+    <tr>
+      <td>${a.area}</td>
+      <td><b>${a.ratePct}%</b></td>
+      <td>${a.incidents}</td>
+      <td>${a.commonCause}</td>
+      <td><span class="badge ${a.badge}">${a.label}${a.flagged ? ' · Flagged' : ''}</span></td>
+    </tr>`).join('');
+
+  document.getElementById('pr-recommendations').innerHTML = TSHWANE_PRIORITY_AREAS
+    .filter(a => a.flagged)
+    .map(a => `<li><span class="dot ${a.badge}"></span> ${a.area} — ${a.commonCause} (${a.ratePct}% outage rate)</li>`)
+    .join('');
 }
 
 function initAnalytics() {
@@ -265,11 +296,60 @@ function initAnalytics() {
 
 initSection('overview');
 
+// ── FLAGGED AREAS (auto-detected from historical outage-rate data) ──
+// Runs immediately on load — independent of section navigation — so any
+// area above the 50% outage-rate threshold is flagged on the admin
+// dashboard the moment the data is available, not only when the
+// Predictive Risk section is opened.
+function renderFlaggedAreasBanner() {
+  const banner = document.getElementById('flaggedAreasBanner');
+  if (!banner) return;
+  const flagged = TSHWANE_PRIORITY_AREAS.filter(a => a.flagged);
+  if (flagged.length === 0) { banner.innerHTML = ''; return; }
+
+  const hasCritical = flagged.some(a => a.level === 'critical');
+  banner.innerHTML = `
+    <div class="flagged-banner ${hasCritical ? 'has-critical' : ''}">
+      <div class="flagged-banner-head">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <b>${flagged.length} area${flagged.length > 1 ? 's' : ''} flagged</b>&nbsp;— historical outage rate above 50%. Prioritise before they escalate.
+      </div>
+      <div class="flagged-banner-list">
+        ${flagged.map(a => `
+          <span class="flagged-pill ${a.badge}">
+            <b>${a.area}</b> ${a.ratePct}% <span class="flagged-pill-status">${a.label}</span>
+          </span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function alertCriticalAreas() {
+  const critical = TSHWANE_PRIORITY_AREAS.filter(a => a.level === 'critical');
+  if (critical.length === 0) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'critical-toast';
+  toast.innerHTML = `
+    <div class="critical-toast-head">
+      <span><i class="fa-solid fa-bolt"></i> Critical outage risk detected</span>
+      <button class="critical-toast-close" aria-label="Dismiss">&times;</button>
+    </div>
+    <div class="critical-toast-body">
+      ${critical.map(a => `<div><b>${a.area}</b> — ${a.ratePct}% outage rate (${a.commonCause})</div>`).join('')}
+    </div>`;
+  document.body.appendChild(toast);
+  toast.querySelector('.critical-toast-close').addEventListener('click', () => toast.remove());
+  requestAnimationFrame(() => toast.classList.add('show'));
+}
+
+renderFlaggedAreasBanner();
+alertCriticalAreas();
+
 // ── AI DISPATCH ──────────────────────────────────────────────
 const BLOCKS = ['Block X','Block S','Block GG','Block AA','Block R','Block CC','Block H','Block F','Block BB','Block DD'];
 const FREQ   = [22, 18, 15, 12, 10, 8, 7, 6, 4, 3]; // historical outage counts
 
-const AI_TECHNICIANS = [
+const AI_ELECTRICIANS = [
   { name: 'P. Nkosi',   area: 'Block BB', jobs: 0, lat: -25.5310, lng: 28.0660 },
   { name: 'L. Khumalo', area: 'Block GG', jobs: 0, lat: -25.5255, lng: 28.0805 },
   { name: 'J. Dlamini', area: 'Block X',  jobs: 1, lat: -25.5055, lng: 28.0755 },
@@ -306,30 +386,30 @@ function runAIDispatch() {
   setTimeout(() => {
     // Sort outages by frequency desc (highest-risk first)
     const sorted = [...UNASSIGNED_OUTAGES].sort((a, b) => b.freq - a.freq);
-    // Available technicians sorted by jobs asc then proximity
-    const available = [...AI_TECHNICIANS].filter(t => t.jobs < 2);
+    // Available electricians sorted by jobs asc then proximity
+    const available = [...AI_ELECTRICIANS].filter(t => t.jobs < 2);
 
     const assignments = sorted.map((outage, i) => {
-      // Score each technician: lower jobs + closer = better
+      // Score each electrician: lower jobs + closer = better
       const scored = available.map(t => ({
-        tech: t,
+        electrician: t,
         score: t.jobs * 10 + dist(t, outage) * 100
       })).sort((a, b) => a.score - b.score);
       const best = scored[i % scored.length];
-      return { outage, tech: best.tech };
+      return { outage, electrician: best.electrician };
     });
 
     const html = `<table class="data-table">
-      <thead><tr><th>Outage</th><th>Block</th><th>Freq (90d)</th><th>Priority</th><th>AI Recommended Technician</th><th>Reason</th><th>Action</th></tr></thead>
+      <thead><tr><th>Outage</th><th>Block</th><th>Freq (90d)</th><th>Priority</th><th>AI Recommended Electrician</th><th>Reason</th><th>Action</th></tr></thead>
       <tbody>${assignments.map(a => `
         <tr>
           <td>${a.outage.id}</td>
           <td>${a.outage.block}</td>
           <td><b>${a.outage.freq}</b> outages</td>
           <td><span class="badge ${a.outage.priority === 'Critical' ? 'red' : a.outage.priority === 'High' ? 'orange' : 'green'}">${a.outage.priority}</span></td>
-          <td><b>${a.tech.name}</b></td>
-          <td style="font-size:11px;color:var(--text-muted)">Nearest available · ${a.tech.jobs} active job(s)</td>
-          <td><button class="btn-primary sm" onclick="confirmDispatch(this,'${a.outage.id}','${a.tech.name}')">Dispatch</button></td>
+          <td><b>${a.electrician.name}</b></td>
+          <td style="font-size:11px;color:var(--text-muted)">Nearest available · ${a.electrician.jobs} active job(s)</td>
+          <td><button class="btn-primary sm" onclick="confirmDispatch(this,'${a.outage.id}','${a.electrician.name}')">Dispatch</button></td>
         </tr>`).join('')}
       </tbody></table>`;
 
@@ -339,7 +419,7 @@ function runAIDispatch() {
   }, 1800);
 }
 
-function confirmDispatch(btn, outageId, techName) {
+function confirmDispatch(btn, outageId, electricianName) {
   btn.textContent = '\u2713 Dispatched';
   btn.style.background = 'var(--green)';
   btn.disabled = true;
@@ -363,7 +443,7 @@ function initTracking() {
   const map = L.map('trackingMap').setView(SOSH, 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '\u00a9 OpenStreetMap' }).addTo(map);
 
-  const techColors = { 'On-Site': TEAL, 'En Route': ORANGE, 'Available': '#1abc9c' };
+  const electricianColors = { 'On-Site': TEAL, 'En Route': ORANGE, 'Available': '#1abc9c' };
   const liveTeam = [
     { lat: -25.5055, lng: 28.0755, name: 'J. Dlamini', status: 'On-Site',   job: '#OT-1042 — Block X' },
     { lat: -25.5185, lng: 28.1025, name: 'T. Mokoena', status: 'En Route',  job: '#OT-1038 — Block S' },
@@ -373,7 +453,7 @@ function initTracking() {
   ];
 
   liveTeam.forEach(t => {
-    const color = techColors[t.status] || BLUE;
+    const color = electricianColors[t.status] || BLUE;
     const icon = L.divIcon({
       html: `<div style="background:${color};color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">${t.name.split(' ')[1][0]}${t.name.split(' ')[0][0]}</div>`,
       className: '', iconSize: [32, 32]

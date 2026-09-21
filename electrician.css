@@ -86,17 +86,10 @@
 .ev-name { font-size: 13px; font-weight: 600; color: var(--text); }
 .ev-meta { font-size: 11px; color: var(--text-muted); }
 
-/* FORM REUSE */
+/* FORM REUSE (generic .form-group/.form-input/.full-btn live in style.css) */
 .form-layout { display: flex; gap: 20px; align-items: flex-start; }
 .form-card { flex: 2; }
 .form-side { flex: 1; min-width: 220px; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
-.req { color: var(--red); }
-.form-input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; transition: border .2s; }
-.form-input:focus { border-color: var(--primary); background: #fff; }
-textarea.form-input { resize: vertical; }
-.full-btn { width: 100%; justify-content: center; padding: 12px; font-size: 14px; }
 .type-selector { display: flex; gap: 8px; flex-wrap: wrap; }
 .type-opt { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--text-muted); transition: all .15s; }
 .type-opt:hover { border-color: var(--primary); color: var(--primary); }
@@ -104,5 +97,17 @@ textarea.form-input { resize: vertical; }
 .success-banner { background: #e8faf5; border: 1.5px solid var(--primary); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text); }
 .success-banner i { color: var(--primary); font-size: 20px; }
 
-@media (max-width: 1100px) { .jobs-grid { grid-template-columns: 1fr 1fr; } .detail-grid { grid-template-columns: 1fr; } }
-@media (max-width: 700px) { .jobs-grid { grid-template-columns: 1fr; } .form-layout { flex-direction: column; } }
+@media (max-width: 1100px) {
+  .jobs-grid { grid-template-columns: 1fr 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .jobs-grid { grid-template-columns: 1fr; }
+  .form-layout { flex-direction: column; }
+  .job-request-card { flex-direction: column; align-items: flex-start; }
+  .jr-actions { width: 100%; }
+  .jr-actions button { flex: 1; }
+  .detail-meta { grid-template-columns: 1fr; }
+  .status-stepper { flex-wrap: wrap; }
+  .step-btn { flex: 1 1 50%; }
+}

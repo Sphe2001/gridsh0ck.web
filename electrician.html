@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Technician Portal — Soshanguve</title>
-  <meta name="description" content="Technician portal for viewing assigned outage jobs, routes and field updates in Soshanguve."/>
+  <title>Electrician Portal — Soshanguve</title>
+  <meta name="description" content="Electrician portal for viewing assigned outage jobs, routes and field updates in Soshanguve."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="technician.css"/>
+  <link rel="stylesheet" href="electrician.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -17,10 +17,10 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="logo">
+    <a href="index.html" class="logo" style="text-decoration:none;">
       <div class="logo-icon"><i class="fa-solid fa-hard-hat"></i></div>
       <span>TechOps</span>
-    </div>
+    </a>
     <div class="nav-section-label">MY WORK</div>
     <nav>
       <a href="#" class="nav-item active" data-section="home"><i class="fa-solid fa-gauge"></i> Dashboard</a>
@@ -34,8 +34,9 @@
       <a href="#" class="nav-item" data-section="evidence"><i class="fa-solid fa-camera"></i> Upload Evidence</a>
     </nav>
     <div class="sidebar-bottom">
-      <a href="index.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Staff Dashboard</a>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Staff Dashboard</a>
       <a href="citizen.html" class="nav-item"><i class="fa-solid fa-house"></i> Citizen Portal</a>
+      <a href="index.html" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
       <div class="user-profile">
         <div class="avatar">JD</div>
         <div>
@@ -303,6 +304,6 @@
   </div>
 </div>
 
-<script src="technician.js"></script>
+<script src="electrician.js"></script>
 </body>
 </html>
