@@ -20,7 +20,12 @@ html { scroll-behavior: smooth; }
 
 /* HERO */
 .hero {
-  background: linear-gradient(135deg, #0d1f2d 0%, #103b30 55%, #0d4f3c 100%);
+  background:
+    linear-gradient(135deg, rgba(13,31,45,.90) 0%, rgba(16,59,48,.86) 55%, rgba(13,79,60,.82) 100%),
+    url('hero-bg.jpg');
+  background-size: cover;
+  background-position: center 60%;
+  background-repeat: no-repeat;
   color: #fff; padding: 90px 32px 100px; text-align: center;
   display: flex; flex-direction: column; align-items: center; gap: 22px;
 }

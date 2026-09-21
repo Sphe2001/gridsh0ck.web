@@ -30,7 +30,7 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
   display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto;
 }
 .logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 24px; color: #fff; font-size: 18px; font-weight: 700; }
-.logo-icon { background: var(--primary); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+.logo-icon { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: block; }
 .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; color: #4a6070; padding: 12px 20px 6px; text-transform: uppercase; }
 .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: var(--sidebar-text); text-decoration: none; border-radius: 0; transition: all .2s; font-size: 13.5px; cursor: pointer; }
 .nav-item:hover, .nav-item.active { color: #fff; background: rgba(26,188,156,.15); border-left: 3px solid var(--primary); }
@@ -188,6 +188,10 @@ textarea.form-input { resize: vertical; }
 .critical-toast-body { font-size: 12px; line-height: 1.6; opacity: .95; }
 .critical-toast-body div + div { margin-top: 4px; }
 
+@media (max-width: 480px) {
+  .critical-toast { left: 12px; right: 12px; top: 12px; width: auto; }
+}
+
 /* AI DISPATCH */
 .ai-banner { background: linear-gradient(135deg, #0d1f2d 0%, #1a3a4a 100%); border-radius: 12px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; border: 1px solid #1e3a4a; }
 .ai-banner-left { display: flex; align-items: center; gap: 14px; }
@@ -248,12 +252,16 @@ textarea.form-input { resize: vertical; }
   .sidebar { width: 60px; min-width: 60px; }
   .sidebar span, .nav-section-label, .user-name, .user-email { display: none; }
   .logo-icon { margin: 0 auto; }
+  /* Nav-item labels are plain text nodes (not wrapped in a span), so collapse
+     them to zero width via font-size and restore the icon's own size. */
+  .nav-item { font-size: 0; justify-content: center; gap: 0; padding: 10px 0; }
+  .nav-item i { font-size: 16px; width: auto; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .section { padding: 16px; }
   .hero-banner { padding: 20px; }
   .hero-value { font-size: 28px; }
-  .hero-actions { width: 100%; }
-  .hero-actions button, .hero-actions a { flex: 1; justify-content: center; }
+  .hero-actions { width: 100%; flex-wrap: wrap; }
+  .hero-actions button, .hero-actions a { flex: 1 1 calc(50% - 5px); justify-content: center; }
   .search-box { width: 100%; order: 3; }
 }
 @media (max-width: 480px) {
