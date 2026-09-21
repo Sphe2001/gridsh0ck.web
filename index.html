@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PowerPulse — Smart Outage Management for the City of Tshwane</title>
-  <meta name="description" content="PowerPulse connects residents, electricians, dispatchers and municipal teams on one real-time outage management platform for the City of Tshwane."/>
+  <title>gridsh0ck — Smart Outage Management for the City of Tshwane</title>
+  <meta name="description" content="gridsh0ck connects residents, electricians, dispatchers and municipal teams on one real-time outage management platform for the City of Tshwane."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="home.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -13,10 +16,10 @@
 <body class="home-body">
 
   <!-- NAV -->
-  <header class="home-nav">
+  <header class="home-nav" id="homeNav">
     <a href="index.html" class="home-logo">
-      <img src="favicon.svg" alt="PowerPulse logo" class="logo-icon"/>
-      <span>PowerPulse</span>
+      <img src="favicon.svg" alt="" class="logo-icon"/>
+      <span>gridsh<span class="zero">0</span>ck</span>
     </a>
     <button class="home-nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu">
       <i class="fa-solid fa-bars"></i>
@@ -24,8 +27,9 @@
     <div class="home-nav-menu" id="navMenu">
       <nav class="home-nav-links">
         <a href="#home">Home</a>
+        <a href="#portals">Portals</a>
         <a href="#about">About</a>
-        <a href="#contact">Contact Us</a>
+        <a href="#contact">Contact</a>
       </nav>
       <div class="home-nav-actions">
         <a href="signin.html" class="btn-ghost-light">Sign In</a>
@@ -34,87 +38,138 @@
     </div>
   </header>
 
-  <!-- HOME / HERO -->
+  <!-- HERO -->
   <section id="home" class="hero">
-    <div class="hero-badge-pill"><i class="fa-solid fa-flask"></i> Prototype — simulated data, not connected to live City of Tshwane systems</div>
-    <h1>See every outage. Dispatch the right crew.<br/>Keep residents informed — in real time.</h1>
-    <p class="hero-sub">PowerPulse connects residents, electricians, dispatchers and municipal operations teams on a single platform — from the moment an outage is reported to the moment it's resolved.</p>
-    <div class="hero-cta">
-      <a href="signup.html" class="btn-primary lg"><i class="fa-solid fa-user-plus"></i> Get Started — Sign Up</a>
-      <a href="signin.html" class="btn-secondary-dark lg"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+    <div class="hero-media" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1>Every outage,<br/><span class="accent">end to end</span></h1>
+        <p class="hero-sub">See every outage. Dispatch the right crew. Keep residents informed — in real time.</p>
+        <div class="hero-cta">
+          <a href="signup.html" class="btn-solid">Create an account</a>
+          <a href="dashboard.html" class="btn-line">Explore the dashboard</a>
+        </div>
+      </div>
+
+      <aside class="incident" aria-label="Example outage record">
+        <div class="incident-top">
+          <div>
+            <div class="incident-id">OUT-2417</div>
+            <div class="incident-where">Transformer fault · Block F, Soshanguve</div>
+          </div>
+          <span class="incident-tag">Simulated</span>
+        </div>
+        <ol class="incident-track">
+          <li class="done">
+            <span class="track-label">Reported</span>
+            <span class="track-meta">By resident · 19:04</span>
+          </li>
+          <li class="done">
+            <span class="track-label">Dispatched</span>
+            <span class="track-meta">T. Mahlangu, Crew 3 · 19:11</span>
+          </li>
+          <li class="live">
+            <span class="track-label">Crew en route</span>
+            <span class="track-meta">On-site ETA 19:40</span>
+          </li>
+          <li>
+            <span class="track-label">Resolved &amp; residents notified</span>
+            <span class="track-meta">Pending</span>
+          </li>
+        </ol>
+        <div class="incident-foot">One record, visible in all three portals.</div>
+      </aside>
     </div>
+
+    <p class="hero-note">
+      Prototype. Every outage, crew, figure and map marker on this site is simulated in the browser.
+      Not connected to live City of Tshwane systems.
+    </p>
   </section>
 
   <!-- PORTALS -->
-  <section class="portals-section">
+  <section id="portals" class="portals-section">
     <div class="section-heading">
-      <div class="eyebrow">Explore the prototype</div>
-      <h2>One platform, three portals</h2>
-      <p>No account needed to look around — jump straight into any portal.</p>
+      <h2>One incident, seen three ways</h2>
+      <p>The same outage record moves through all three portals. No account needed to look around.</p>
     </div>
-    <div class="portals-grid">
-      <a href="citizen.html" class="portal-card">
-        <div class="portal-icon teal"><i class="fa-solid fa-house"></i></div>
-        <h3>Citizen Portal</h3>
-        <p>Report an outage, track its status and get notified the moment it's resolved.</p>
-        <span class="portal-link">Open Citizen Portal <i class="fa-solid fa-arrow-right"></i></span>
-      </a>
-      <a href="electrician.html" class="portal-card">
-        <div class="portal-icon orange"><i class="fa-solid fa-bolt"></i></div>
-        <h3>Electrician Portal</h3>
-        <p>View assigned jobs, log repair notes and track your route in the field.</p>
-        <span class="portal-link">Open Electrician Portal <i class="fa-solid fa-arrow-right"></i></span>
-      </a>
-      <a href="dashboard.html" class="portal-card">
-        <div class="portal-icon purple"><i class="fa-solid fa-gauge"></i></div>
-        <h3>Municipal Dashboard</h3>
-        <p>AI dispatch, live GPS tracking, predictive risk flagging and analytics.</p>
-        <span class="portal-link">Open Dashboard <i class="fa-solid fa-arrow-right"></i></span>
-      </a>
-    </div>
+
+    <ol class="path-list">
+      <li class="path-item">
+        <a href="citizen.html">
+          <div class="path-num">01</div>
+          <div class="path-body">
+            <h3>A resident reports the fault</h3>
+            <p>Report an electricity or water fault, track its status, and see which outages are already known in the area.</p>
+          </div>
+          <div class="path-go">Citizen Portal <i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+      </li>
+      <li class="path-item">
+        <a href="dashboard.html">
+          <div class="path-num">02</div>
+          <div class="path-body">
+            <h3>Operations verifies and dispatches</h3>
+            <p>AI-assisted dispatch, a live outage map, GPS crew tracking, predictive risk flagging and analytics — the whole city in one view.</p>
+          </div>
+          <div class="path-go">Municipal Dashboard <i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+      </li>
+      <li class="path-item">
+        <a href="electrician.html">
+          <div class="path-num">03</div>
+          <div class="path-body">
+            <h3>An electrician closes it out</h3>
+            <p>Assigned jobs, routing to site, and status updates logged from the field as the repair happens.</p>
+          </div>
+          <div class="path-go">Electrician Portal <i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+      </li>
+    </ol>
   </section>
 
   <!-- ABOUT -->
   <section id="about" class="about-section">
     <div class="section-heading">
-      <div class="eyebrow">About PowerPulse</div>
       <h2>Why we built this</h2>
-      <p>A single connected system for the whole outage lifecycle — not another disconnected spreadsheet or call centre.</p>
     </div>
+
     <div class="about-grid">
       <div class="about-text">
         <p>The City of Tshwane needs a single, real-time system to manage service outages from the moment they're reported until they're resolved. Today, information can go stale because residents, dispatchers, electricians and municipal teams don't always share one connected platform — which leads to delays, poor communication and repairs that are hard to track.</p>
-        <p>PowerPulse is a working prototype of that connected platform. It takes an outage from report to resolution, and turns every closed job into historical data the City can use to spot recurring problems — before they escalate into costly, repeat failures.</p>
+        <p>gridsh0ck is a working prototype of that connected platform. It takes an outage from report to resolution, and turns every closed job into historical data the City can use to spot recurring problems — before they escalate into costly, repeat failures.</p>
       </div>
-      <div class="about-flow">
-        <div class="flow-step"><span>1</span> Report outage</div>
-        <div class="flow-step"><span>2</span> Verify &amp; deduplicate</div>
-        <div class="flow-step"><span>3</span> Prioritise</div>
-        <div class="flow-step"><span>4</span> Dispatch &amp; assign</div>
-        <div class="flow-step"><span>5</span> Track &amp; repair</div>
-        <div class="flow-step"><span>6</span> Notify customer</div>
-        <div class="flow-step"><span>7</span> Close &amp; analyse</div>
+
+      <div>
+        <div class="lifecycle-label">The outage lifecycle</div>
+        <ol class="lifecycle">
+          <li><span>01</span><b>Report outage</b></li>
+          <li><span>02</span><b>Verify &amp; deduplicate</b></li>
+          <li><span>03</span><b>Prioritise</b></li>
+          <li><span>04</span><b>Dispatch &amp; assign</b></li>
+          <li><span>05</span><b>Track &amp; repair</b></li>
+          <li><span>06</span><b>Notify customer</b></li>
+          <li><span>07</span><b>Close &amp; analyse</b></li>
+        </ol>
       </div>
     </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <i class="fa-solid fa-robot"></i>
-        <h4>AI-Assisted Dispatch</h4>
+
+    <div class="caps">
+      <div class="cap-row">
+        <h3>AI-assisted dispatch</h3>
         <p>Matches new outages to the nearest available crew by workload and location.</p>
       </div>
-      <div class="feature-card">
-        <i class="fa-solid fa-satellite-dish"></i>
-        <h4>Live GPS Tracking</h4>
+      <div class="cap-row">
+        <h3>Live GPS tracking</h3>
         <p>Follow a technician's journey from depot to on-site, in real time.</p>
       </div>
-      <div class="feature-card">
-        <i class="fa-solid fa-chart-line"></i>
-        <h4>Historical Risk Flagging</h4>
+      <div class="cap-row">
+        <h3>Historical risk flagging</h3>
         <p>Areas with a 90-day outage rate above 50% are automatically flagged for the City.</p>
       </div>
-      <div class="feature-card">
-        <i class="fa-solid fa-bell"></i>
-        <h4>Resident Notifications</h4>
+      <div class="cap-row">
+        <h3>Resident notifications</h3>
         <p>Automatic updates when a technician is on the way, nearby, or the fault is fixed.</p>
       </div>
     </div>
@@ -123,35 +178,36 @@
   <!-- CONTACT -->
   <section id="contact" class="contact-section">
     <div class="section-heading">
-      <div class="eyebrow">Contact Us</div>
       <h2>Get in touch</h2>
       <p>This is a prototype — messages sent below are not delivered anywhere.</p>
     </div>
+
     <div class="contact-grid">
       <form class="contact-form card" id="contactForm">
         <div class="form-group">
-          <label>Name</label>
-          <input class="form-input" type="text" required placeholder="Your name"/>
+          <label for="cName">Name</label>
+          <input id="cName" class="form-input" type="text" required placeholder="Your name"/>
         </div>
         <div class="form-group">
-          <label>Email</label>
-          <input class="form-input" type="email" required placeholder="you@example.com"/>
+          <label for="cEmail">Email</label>
+          <input id="cEmail" class="form-input" type="email" required placeholder="you@example.com"/>
         </div>
         <div class="form-group">
-          <label>Message</label>
-          <textarea class="form-input" rows="4" required placeholder="How can we help?"></textarea>
+          <label for="cMsg">Message</label>
+          <textarea id="cMsg" class="form-input" rows="4" required placeholder="How can we help?"></textarea>
         </div>
-        <button class="btn-primary full-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        <button class="btn-primary full-btn" type="submit">Send message</button>
         <div class="form-note" id="contactNote" style="display:none;"></div>
       </form>
+
       <div class="contact-info">
         <div class="info-row">
-          <i class="fa-solid fa-circle-info"></i>
-          <div><b>Prototype note</b><p>PowerPulse is a demonstration built for a City of Tshwane outage-management challenge. It is not an official City of Tshwane platform and isn't connected to live municipal systems.</p></div>
+          <b>Prototype note</b>
+          <p>gridsh0ck is a demonstration built for a City of Tshwane outage-management challenge. It is not an official City of Tshwane platform and isn't connected to live municipal systems.</p>
         </div>
         <div class="info-row">
-          <i class="fa-solid fa-diagram-project"></i>
-          <div><b>One system, every role</b><p>The Citizen, Electrician and Municipal Dashboard portals linked above are all part of this same prototype — try any of them.</p></div>
+          <b>One system, every role</b>
+          <p>The Citizen, Electrician and Municipal Dashboard portals linked above are all part of this same prototype — try any of them.</p>
         </div>
       </div>
     </div>
@@ -159,9 +215,10 @@
 
   <!-- FOOTER -->
   <footer class="home-footer">
-    <div>© 2026 PowerPulse — Prototype for a City of Tshwane Smart Outage Management challenge. Not an official City of Tshwane service.</div>
+    <div>© 2026 gridsh0ck — Prototype for a City of Tshwane Smart Outage Management challenge. Not an official City of Tshwane service.</div>
     <div class="footer-links">
       <a href="#home">Home</a>
+      <a href="#portals">Portals</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <a href="signin.html">Sign In</a>

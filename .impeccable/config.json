@@ -1,0 +1,18 @@
+{
+  "buildPath": "comp",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-21T21:47:23.155Z",
+        "reason": "False positive verified in 3 screenshot rounds: .path-list ol carries border-top with 0 padding, but each row's inset comes from the grandchild .path-item a (padding: 32px 10px), so text sits 32px below the rule, not flush. Detector heuristic does not walk to the grandchild."
+      }
+    ]
+  }
+}

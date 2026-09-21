@@ -6,6 +6,13 @@ document.getElementById('contactForm')?.addEventListener('submit', e => {
   e.target.reset();
 });
 
+// The nav rides transparently over the hero photograph, then solidifies once it
+// would otherwise sit on white page content.
+const homeNav = document.getElementById('homeNav');
+const syncNav = () => homeNav?.classList.toggle('is-solid', window.scrollY > 24);
+syncNav();
+window.addEventListener('scroll', syncNav, { passive: true });
+
 // Mobile nav toggle
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');

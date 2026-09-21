@@ -3,72 +3,113 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up — PowerPulse</title>
-  <meta name="description" content="Create a prototype PowerPulse account — no real credentials are stored."/>
+  <title>Sign Up — gridsh0ck</title>
+  <meta name="description" content="Create a prototype gridsh0ck account — no real credentials are stored."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="auth.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body class="auth-body">
-  <div class="auth-shell">
-    <div class="auth-brand">
-      <a href="index.html" class="home-logo">
-        <img src="favicon.svg" alt="PowerPulse logo" class="logo-icon"/>
-        <span>PowerPulse</span>
-      </a>
-      <h2>Join the connected outage platform for the City of Tshwane.</h2>
-      <p>One account, routed to the right portal for how you'll use PowerPulse.</p>
-      <div class="auth-brand-list">
-        <div><i class="fa-solid fa-house"></i> Residents report and track outages from the Citizen Portal.</div>
-        <div><i class="fa-solid fa-bolt"></i> Electricians manage assigned jobs and repair notes in the field.</div>
-        <div><i class="fa-solid fa-gauge"></i> Municipal staff run AI dispatch, tracking and analytics.</div>
+  <main class="auth-shell">
+    <section class="auth-panel">
+      <div class="auth-panel-inner">
+        <a href="index.html" class="auth-mark" aria-label="gridsh0ck — back to home">
+          <img src="favicon.svg" alt=""/>
+          <span>gridsh<span class="zero">0</span>ck</span>
+        </a>
+
+        <div class="auth-intro">
+          <h1>Start here.</h1>
+          <p>One account, routed to the right portal for how you'll use gridsh0ck.</p>
+        </div>
+
+        <form class="auth-form" data-auth-form data-loading-label="Creating account...">
+          <div class="auth-field">
+            <label for="name">Full name</label>
+            <div class="auth-input">
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+              <input id="name" type="text" name="name" required autocomplete="name" placeholder="e.g. Thabo Mokoena"/>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="email">Email</label>
+            <div class="auth-input">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <input id="email" type="email" name="email" required autocomplete="email" placeholder="you@example.com"/>
+            </div>
+          </div>
+
+          <div class="auth-row-2">
+            <div class="auth-field">
+              <label for="password">Password</label>
+              <div class="auth-input">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••"/>
+                <button class="auth-reveal" type="button" data-reveal="password" aria-controls="password" aria-pressed="false" aria-label="Show password">
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="confirmPassword">Confirm password</label>
+              <div class="auth-input">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <input id="confirmPassword" type="password" name="confirmPassword" required autocomplete="new-password" placeholder="••••••••"/>
+                <button class="auth-reveal" type="button" data-reveal="confirmPassword" aria-controls="confirmPassword" aria-pressed="false" aria-label="Show password">
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <fieldset class="auth-roles">
+            <legend>I am a...</legend>
+            <div class="auth-role-group">
+              <label class="auth-role">
+                <input type="radio" name="role" value="citizen" checked
+                       data-role-note="Report a fault, track its status and see outages in your area."/>
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>Resident</span>
+              </label>
+              <label class="auth-role">
+                <input type="radio" name="role" value="electrician"
+                       data-role-note="View assigned jobs, log repair notes and track your route in the field."/>
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                <span>Electrician</span>
+              </label>
+              <label class="auth-role">
+                <input type="radio" name="role" value="municipal"
+                       data-role-note="Run AI-assisted dispatch, live crew tracking and analytics."/>
+                <i class="fa-solid fa-gauge" aria-hidden="true"></i>
+                <span>Municipal</span>
+              </label>
+            </div>
+            <p class="auth-role-note" data-role-note-target aria-live="polite">Report a fault, track its status and see outages in your area.</p>
+          </fieldset>
+
+          <button class="auth-submit" type="submit">Create account</button>
+
+          <p class="auth-note">
+            <i class="fa-solid fa-flask" aria-hidden="true"></i>
+            <span>Prototype only — no account is actually created and no credentials are stored or verified. Submitting simply takes you to the matching portal.</span>
+          </p>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="signin.html">Sign in</a></p>
       </div>
-      <div class="auth-brand-badge"><i class="fa-solid fa-flask"></i> Prototype build</div>
-    </div>
+    </section>
 
-    <div class="auth-form-panel">
-      <a href="index.html" class="auth-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
-      <h1>Create your account</h1>
-      <div class="auth-sub">It only takes a minute — this is a demo, so any details work.</div>
-
-      <form data-auth-form data-loading-label="Creating account...">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input class="form-input" type="text" name="name" required placeholder="e.g. Thabo Mokoena"/>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input class="form-input" type="email" name="email" required placeholder="you@example.com"/>
-        </div>
-        <div class="form-group">
-          <label>I am a...</label>
-          <select class="form-input" name="role" required>
-            <option value="citizen" selected>Resident / Citizen</option>
-            <option value="electrician">Electrician / Field Technician</option>
-            <option value="municipal">Municipal Operations Staff</option>
-          </select>
-        </div>
-        <div class="auth-row-2">
-          <div class="form-group">
-            <label>Password</label>
-            <input class="form-input" type="password" name="password" required placeholder="••••••••" autocomplete="off"/>
-          </div>
-          <div class="form-group">
-            <label>Confirm Password</label>
-            <input class="form-input" type="password" name="confirmPassword" required placeholder="••••••••" autocomplete="off"/>
-          </div>
-        </div>
-        <div class="auth-disclaimer">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <div>Prototype only — no account is actually created and no credentials are stored or verified. Submitting simply takes you to the matching portal.</div>
-        </div>
-        <button class="btn-primary full-btn" type="submit"><i class="fa-solid fa-user-plus"></i> Sign Up</button>
-      </form>
-
-      <div class="auth-switch">Already have an account? <a href="signin.html">Sign In</a></div>
-    </div>
-  </div>
+    <figure class="auth-art">
+      <img src="auth-art.webp" alt="" width="1744" height="2336" decoding="async" fetchpriority="high"/>
+      <figcaption>Soshanguve, City of Tshwane</figcaption>
+    </figure>
+  </main>
 
   <script src="auth.js"></script>
 </body>

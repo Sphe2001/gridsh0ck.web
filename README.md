@@ -1,4 +1,4 @@
-# PowerPulse
+# gridsh0ck
 
 A front-end prototype for municipal outage management in Soshanguve, City of Tshwane. It covers
 the same incident from three sides: the operations centre that sees every outage, the resident who
