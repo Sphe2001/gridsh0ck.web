@@ -35,6 +35,7 @@ function initSection(name) {
   if (initialized.has(name)) return;
   initialized.add(name);
   if (name === 'overview') initOverview();
+  if (name === 'reports') initReports();
   if (name === 'map') initFullMap();
   if (name === 'dispatch') initDispatch();
   if (name === 'tracking') initTracking();
@@ -56,18 +57,15 @@ const SOSH = [-25.5231, 28.0900];
 
 // Outages across Soshanguve blocks (real block approximate coords)
 const outages = [
-  { lat: -25.5050, lng: 28.0750, label: 'Block X — Electricity (Critical)', color: RED, type: 'electricity' },
-  { lat: -25.5180, lng: 28.1020, label: 'Block S — Electricity (Critical)', color: RED, type: 'electricity' },
-  { lat: -25.5320, lng: 28.0650, label: 'Block H — Water (In Progress)', color: ORANGE, type: 'water' },
-  { lat: -25.5400, lng: 28.1100, label: 'Block F — Sewage (In Progress)', color: ORANGE, type: 'sewage' },
-  { lat: -25.5100, lng: 28.0900, label: 'Block BB — Roads (Resolved)', color: TEAL, type: 'roads' },
-  { lat: -25.5250, lng: 28.0800, label: 'Block GG — Electricity (Critical)', color: RED, type: 'electricity' },
-  { lat: -25.5350, lng: 28.0950, label: 'Block CC — Electricity (In Progress)', color: ORANGE, type: 'electricity' },
-  { lat: -25.5150, lng: 28.1150, label: 'Block AA — Electricity (Critical)', color: RED, type: 'electricity' },
-  { lat: -25.5480, lng: 28.0820, label: 'Block EE — Water (In Progress)', color: ORANGE, type: 'water' },
-  { lat: -25.5060, lng: 28.1050, label: 'Block DD — Electricity (Resolved)', color: TEAL, type: 'electricity' },
-  { lat: -25.5290, lng: 28.0700, label: 'Block R — Electricity (Critical)', color: RED, type: 'electricity' },
-  { lat: -25.5420, lng: 28.1200, label: 'Block T — Roads (In Progress)', color: ORANGE, type: 'roads' },
+  { lat: -25.5050, lng: 28.0750, label: 'Block X — No Power (Critical)', color: RED },
+  { lat: -25.5180, lng: 28.1020, label: 'Block S — Damaged Infrastructure (Critical)', color: RED },
+  { lat: -25.5250, lng: 28.0800, label: 'Block GG — No Power (Critical)', color: RED },
+  { lat: -25.5150, lng: 28.1150, label: 'Block AA — No Power (Critical)', color: RED },
+  { lat: -25.5290, lng: 28.0700, label: 'Block R — Street Light (In Progress)', color: ORANGE },
+  { lat: -25.5350, lng: 28.0950, label: 'Block CC — Partial Power (In Progress)', color: ORANGE },
+  { lat: -25.5480, lng: 28.0820, label: 'Block EE — Partial Power (In Progress)', color: ORANGE },
+  { lat: -25.5060, lng: 28.1050, label: 'Block DD — No Power (Resolved)', color: TEAL },
+  { lat: -25.5100, lng: 28.0900, label: 'Block BB — Street Light (Resolved)', color: TEAL },
 ];
 
 // Electricity heatmap points [lat, lng, intensity]
@@ -485,3 +483,169 @@ function initTracking() {
     if (feed.children.length > 8) feed.lastChild.remove();
   }, 5000);
 }
+
+// ── CITIZEN FAULT REPORTS ─────────────────────────────────────
+// The operations end of the shared ledger. A resident submits in the citizen
+// portal, the record is written to the ledger, and this section renders it —
+// in an already-open tab, without a refresh.
+
+const REPORT_STATUSES = ['New', 'Verified', 'Assigned', 'In Progress', 'Resolved'];
+let reportFilter = 'all';
+
+function escHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/** The rows currently on screen — what an export writes out. */
+function visibleReports() {
+  const all = GridState.getReports();
+  return reportFilter === 'all' ? all : all.filter(r => r.status === reportFilter);
+}
+
+function isToday(iso) {
+  const d = new Date(iso), n = new Date();
+  return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+}
+
+function reportsStorageWarning() {
+  if (GridState.storageWorks()) return '';
+  return '<div class="storage-warning">' +
+    '<i class="fa-solid fa-triangle-exclamation"></i>' +
+    '<div><b>The portals cannot share data right now.</b> This page was opened straight ' +
+    'from disk, so the browser keeps each page storage separate and a report filed in ' +
+    'one portal never reaches the others. Serve the folder instead &mdash; ' +
+    '<code>python -m http.server 8000</code> &mdash; and open it from ' +
+    '<code>http://localhost:8000</code>.</div></div>';
+}
+
+function renderReports() {
+  const all = GridState.getReports();
+
+  const set = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  set('rp-total', all.length);
+  set('rp-new', all.filter(r => r.awaitingCrew).length);
+  set('rp-critical', all.filter(r => r.priority === 'Critical').length);
+  set('rp-today', all.filter(r => isToday(r.reportedAt)).length);
+
+  // Sidebar count: reports nobody has triaged yet.
+  const badge = document.getElementById('navReportCount');
+  if (badge) {
+    const untriaged = all.filter(r => r.awaitingCrew).length;
+    badge.textContent = untriaged;
+    badge.hidden = untriaged === 0;
+  }
+
+  const body = document.getElementById('reportsBody');
+  if (!body) return;
+
+  const intro = document.querySelector('#section-reports .reports-intro');
+  if (intro && !GridState.storageWorks() && !document.querySelector('.storage-warning')) {
+    intro.insertAdjacentHTML('beforebegin', reportsStorageWarning());
+  }
+
+  const rows = visibleReports();
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="7" class="reports-empty">No reports match this filter.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = rows.map(r => {
+    // Dispatch is automatic, so this column reports what the engine decided
+    // and why — a dispatcher overrides it rather than driving it.
+    const crewCell = r.assignedToName
+      ? `<b>${escHtml(r.assignedToName)}</b>
+         <div class="cell-sub">${escHtml(r.assignmentReason || r.assignedTeam || '')}</div>`
+      : `<span class="badge red">Awaiting crew</span>
+         <div class="cell-sub">${escHtml(r.assignmentReason || 'Not yet assigned.')}</div>`;
+
+    return `<tr data-ref="${escHtml(r.ref)}" class="${r.awaitingCrew ? 'row-waiting' : ''}">
+      <td><b>#${escHtml(r.ref)}</b></td>
+      <td>${escHtml(GridState.formatDateTime(r.reportedAt))}<div class="cell-sub">${escHtml(GridState.timeAgo(r.reportedAt))}</div></td>
+      <td><i class="fa-solid ${escHtml(r.faultIcon)}" style="color:var(--orange)"></i> ${escHtml(r.faultLabel)}</td>
+      <td>${escHtml(r.block)}<div class="cell-sub">${escHtml(r.address || 'No street given')}</div></td>
+      <td><span class="badge ${escHtml(r.priorityBadge)}">${escHtml(r.priority)}</span></td>
+      <td class="crew-cell">${crewCell}</td>
+      <td>
+        <select class="status-select" onchange="changeReportStatus('${escHtml(r.ref)}', this.value)" aria-label="Status for ${escHtml(r.ref)}">
+          ${REPORT_STATUSES.map(s => `<option value="${s}"${s === r.status ? ' selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function initReports() {
+  document.querySelectorAll('.reports-filter .tog').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.reports-filter .tog').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      reportFilter = btn.dataset.status;
+      renderReports();
+    });
+  });
+  renderReports();
+}
+
+function changeReportStatus(ref, status) {
+  GridState.updateStatus(ref, status);
+}
+
+// ── EXPORTS ───────────────────────────────────────────────────
+// Operations keeps the queue-level exports for records and reporting. The
+// per-fault ticket download belongs to the electrician who has to work it,
+// so it lives in the field portal rather than here.
+function exportReportsCSV() {
+  GridExport.csv(visibleReports());
+}
+
+function exportReportsJSON() {
+  GridExport.json(visibleReports());
+}
+
+function resetLedger() {
+  if (confirm('Reset the report ledger back to its seeded demo data? Any reports filed in the citizen portal will be removed.')) {
+    GridState.reset();
+  }
+}
+
+// ── LIVE ARRIVALS ─────────────────────────────────────────────
+let knownRefs = new Set(GridState.getReports().map(r => r.ref));
+
+function reportToast(report) {
+  const toast = document.createElement('div');
+  toast.className = 'report-toast';
+  toast.innerHTML = `
+    <div class="report-toast-head">
+      <span><i class="fa-solid fa-inbox"></i> New citizen report</span>
+      <button class="report-toast-close" aria-label="Dismiss">&times;</button>
+    </div>
+    <div class="report-toast-body">
+      <b>#${escHtml(report.ref)}</b> — ${escHtml(report.faultLabel)}, ${escHtml(report.block)}
+      <span class="badge ${escHtml(report.priorityBadge)}">${escHtml(report.priority)}</span>
+    </div>
+    <button class="btn-primary sm report-toast-go">Open report queue</button>`;
+  document.body.appendChild(toast);
+
+  const dismiss = () => toast.remove();
+  toast.querySelector('.report-toast-close').addEventListener('click', dismiss);
+  toast.querySelector('.report-toast-go').addEventListener('click', () => {
+    document.querySelector('.nav-item[data-section="reports"]')?.click();
+    dismiss();
+  });
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(dismiss, 12000);
+}
+
+GridState.subscribe(reports => {
+  // Announce anything that arrived since the last render, then repaint.
+  reports.forEach(r => {
+    if (!knownRefs.has(r.ref)) reportToast(r);
+  });
+  knownRefs = new Set(reports.map(r => r.ref));
+  renderReports();
+});
+
+// Keep the sidebar count and KPIs honest from first paint, even if the
+// dispatcher never opens the section.
+renderReports();

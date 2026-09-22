@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Soshanguve Citizen Portal</title>
-  <meta name="description" content="Report and track electricity and water outages in Soshanguve from the citizen portal."/>
+  <meta name="description" content="Report and track electricity faults and power outages in Soshanguve from the citizen portal."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -72,7 +72,7 @@
       </div>
 
       <div class="quick-actions">
-        <div class="qa-card" onclick="nav('report')"><div class="qa-icon green"><i class="fa-solid fa-bolt"></i></div><div class="qa-label">Report Outage</div><div class="qa-sub">Electricity or water problem</div></div>
+        <div class="qa-card" onclick="nav('report')"><div class="qa-icon green"><i class="fa-solid fa-bolt"></i></div><div class="qa-label">Report Fault</div><div class="qa-sub">Power outage or electrical fault</div></div>
         <div class="qa-card" onclick="nav('view')"><div class="qa-icon teal"><i class="fa-solid fa-map-location-dot"></i></div><div class="qa-label">View Outages</div><div class="qa-sub">Active issues in your area</div></div>
         <div class="qa-card" onclick="nav('track')"><div class="qa-icon orange"><i class="fa-solid fa-magnifying-glass"></i></div><div class="qa-label">Track Report</div><div class="qa-sub">Check your report status</div></div>
         <div class="qa-card" onclick="nav('notifications')"><div class="qa-icon purple"><i class="fa-solid fa-bell"></i></div><div class="qa-label">Notifications</div><div class="qa-sub">Updates on repairs</div></div>
@@ -85,12 +85,8 @@
         <div class="card table-card">
           <div class="card-header"><span><i class="fa-solid fa-list"></i> Your Recent Reports</span></div>
           <table class="data-table">
-            <thead><tr><th>Report ID</th><th>Type</th><th>Area</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>#RPT-0091</td><td>Electricity</td><td>Block X</td><td>21 Sep 2026</td><td><span class="badge orange">In Progress</span></td></tr>
-              <tr><td>#RPT-0085</td><td>Water</td><td>Block X</td><td>18 Sep 2026</td><td><span class="badge green">Resolved</span></td></tr>
-              <tr><td>#RPT-0078</td><td>Electricity</td><td>Block X</td><td>10 Sep 2026</td><td><span class="badge green">Resolved</span></td></tr>
-            </tbody>
+            <thead><tr><th>Report ID</th><th>Fault</th><th>Area</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="recentReportsBody"></tbody>
           </table>
         </div>
         <div class="card" style="flex:1;min-width:200px;">
@@ -113,21 +109,17 @@
         <div class="card form-card">
           <div class="card-header"><span>Outage Details</span></div>
           <div class="form-group">
-            <label>Account Number <span class="req">*</span></label>
-            <input type="text" class="form-input" id="accountNum" placeholder="e.g. TSH-2024-00123"/>
-          </div>
-          <div class="form-group">
-            <label>Outage Type <span class="req">*</span></label>
-            <div class="type-selector">
-              <div class="type-opt active" data-type="electricity"><i class="fa-solid fa-bolt"></i> Electricity</div>
-              <div class="type-opt" data-type="water"><i class="fa-solid fa-droplet"></i> Water</div>
-              <div class="type-opt" data-type="sewage"><i class="fa-solid fa-water"></i> Sewage</div>
-              <div class="type-opt" data-type="roads"><i class="fa-solid fa-road"></i> Roads</div>
+            <label>Electricity Fault Type <span class="req">*</span></label>
+            <div class="type-selector" id="faultType">
+              <div class="type-opt active" data-type="no-power"><i class="fa-solid fa-plug-circle-xmark"></i> No Power</div>
+              <div class="type-opt" data-type="partial"><i class="fa-solid fa-plug-circle-exclamation"></i> Partial Power</div>
+              <div class="type-opt" data-type="streetlight"><i class="fa-solid fa-lightbulb"></i> Street Light</div>
+              <div class="type-opt" data-type="damage"><i class="fa-solid fa-bolt"></i> Damaged Infrastructure</div>
             </div>
           </div>
           <div class="form-group">
-            <label>Block / Area <span class="req">*</span></label>
-            <select class="form-input">
+            <label for="reportBlock">Block / Area <span class="req">*</span></label>
+            <select class="form-input" id="reportBlock">
               <option>Block X</option><option>Block S</option><option>Block H</option>
               <option>Block F</option><option>Block BB</option><option>Block GG</option>
               <option>Block AA</option><option>Block R</option><option>Block CC</option>
@@ -135,18 +127,18 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Street Address</label>
-            <input type="text" class="form-input" placeholder="e.g. 12 Mabunda Street"/>
+            <label for="reportAddress">Street Address</label>
+            <input type="text" class="form-input" id="reportAddress" placeholder="e.g. 12 Mabunda Street"/>
           </div>
           <div class="form-group">
-            <label>Description <span class="req">*</span></label>
-            <textarea class="form-input" rows="3" placeholder="Describe the problem..."></textarea>
+            <label for="reportDesc">Description <span class="req">*</span></label>
+            <textarea class="form-input" id="reportDesc" rows="3" placeholder="Describe the fault..."></textarea>
           </div>
           <div class="form-group">
-            <label>How long has this been happening?</label>
-            <select class="form-input">
-              <option>Less than 1 hour</option><option>1–3 hours</option>
-              <option>3–6 hours</option><option>More than 6 hours</option><option>More than a day</option>
+            <label for="reportDuration">How long has the power been off?</label>
+            <select class="form-input" id="reportDuration">
+              <option>Less than 1 hour</option><option>1-3 hours</option>
+              <option>3-6 hours</option><option>More than 6 hours</option><option>More than a day</option>
             </select>
           </div>
           <div class="form-group">
@@ -154,8 +146,12 @@
             <div class="file-drop"><i class="fa-solid fa-camera"></i> Click to upload or drag photo here</div>
           </div>
           <div class="form-group">
-            <label>Your Phone Number</label>
-            <input type="tel" class="form-input" placeholder="+27 ..."/>
+            <label for="reportPhone">Your Phone Number</label>
+            <input type="tel" class="form-input" id="reportPhone" placeholder="+27 ..."/>
+          </div>
+          <div id="report-error" class="dupe-banner" style="display:none;background:#fdecea;border-color:#f5c6c2;color:var(--red-ink);">
+            <i class="fa-solid fa-circle-exclamation" style="color:var(--red-ink)"></i>
+            <div id="report-error-text"></div>
           </div>
           <button class="btn-primary full-btn" onclick="submitReport()"><i class="fa-solid fa-paper-plane"></i> Submit Report</button>
         </div>
@@ -175,12 +171,12 @@
       </div>
       <div id="dupe-warning" class="dupe-banner" style="display:none;">
         <i class="fa-solid fa-copy"></i>
-        <div><b>Possible duplicate detected!</b> A similar electricity outage was already reported in your area (<b>#RPT-0091</b>, reported 2h ago). <a href="#" onclick="nav('track');document.getElementById('trackInput').value='#RPT-0091';doTrack();return false;">Track existing report</a> or continue to submit a new one.</div>
-        <button class="btn-primary sm" onclick="document.getElementById('dupe-warning').style.display='none'">Submit Anyway</button>
+        <div id="dupe-warning-text"></div>
+        <button class="btn-primary sm" onclick="submitAnyway()">Submit Anyway</button>
       </div>
       <div id="report-success" class="success-banner" style="display:none;">
         <i class="fa-solid fa-circle-check"></i>
-        <div><b>Report submitted!</b> Your reference number is <b>#RPT-0094</b>. You will receive updates via SMS.</div>
+        <div id="report-success-text"></div>
       </div>
     </div>
 
@@ -188,17 +184,16 @@
     <div id="section-view" class="section">
       <div class="section-title"><i class="fa-solid fa-map-location-dot" style="color:var(--primary)"></i> Active Outages in Soshanguve</div>
       <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
-        <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-bolt"></i></div><div><div class="kpi-label">Electricity Outages</div><div class="kpi-value">8</div></div></div>
-        <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-droplet"></i></div><div><div class="kpi-label">Water Outages</div><div class="kpi-value">3</div></div></div>
-        <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-road"></i></div><div><div class="kpi-label">Other Issues</div><div class="kpi-value">5</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-bolt"></i></div><div><div class="kpi-label">Critical Faults</div><div class="kpi-value">4</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-screwdriver-wrench"></i></div><div><div class="kpi-label">Crews On Site</div><div class="kpi-value">3</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-circle-check"></i></div><div><div class="kpi-label">Restored Today</div><div class="kpi-value">6</div></div></div>
       </div>
       <div class="card" style="padding:0;overflow:hidden;">
         <div id="citizenMap" style="height:380px;width:100%;"></div>
       </div>
       <div class="map-legend">
-        <span><span class="dot red"></span> Electricity</span>
-        <span><span class="dot teal"></span> Water</span>
-        <span><span class="dot orange"></span> Other</span>
+        <span><span class="dot red"></span> Critical</span>
+        <span><span class="dot orange"></span> In Progress</span>
         <span><span class="dot green"></span> Resolved</span>
       </div>
       <div class="card">
@@ -208,9 +203,8 @@
           <tbody>
             <tr><td>Block X</td><td>Electricity</td><td><span class="badge red">Critical</span></td><td>3h ago</td><td>~1h</td></tr>
             <tr><td>Block S</td><td>Electricity</td><td><span class="badge red">Critical</span></td><td>4h ago</td><td>~2h</td></tr>
-            <tr><td>Block H</td><td>Water</td><td><span class="badge orange">In Progress</span></td><td>1h ago</td><td>~3h</td></tr>
             <tr><td>Block GG</td><td>Electricity</td><td><span class="badge orange">In Progress</span></td><td>2h ago</td><td>~1h</td></tr>
-            <tr><td>Block BB</td><td>Roads</td><td><span class="badge green">Resolved</span></td><td>5h ago</td><td>Done</td></tr>
+            <tr><td>Block AA</td><td>Electricity</td><td><span class="badge green">Resolved</span></td><td>5h ago</td><td>Done</td></tr>
           </tbody>
         </table>
       </div>
@@ -249,7 +243,7 @@
     <div id="section-notifications" class="section">
       <div class="section-title"><i class="fa-solid fa-bell" style="color:var(--primary)"></i> Notifications</div>
       <div class="notif-list">
-        <div class="notif-item unread"><div class="notif-icon green"><i class="fa-solid fa-circle-check"></i></div><div class="notif-body"><div class="notif-title">Report #RPT-0085 Resolved</div><div class="notif-sub">Your water issue in Block X has been fixed. Please confirm resolution.</div></div><div class="notif-time">2h ago</div></div>
+        <div class="notif-item unread"><div class="notif-icon green"><i class="fa-solid fa-circle-check"></i></div><div class="notif-body"><div class="notif-title">Report #RPT-0078 Resolved</div><div class="notif-sub">Your flickering-lights fault in Block X has been fixed. Please confirm resolution.</div></div><div class="notif-time">2h ago</div></div>
         <div class="notif-item unread"><div class="notif-icon orange"><i class="fa-solid fa-hard-hat"></i></div><div class="notif-body"><div class="notif-title">Electrician On The Way</div><div class="notif-sub">J. Dlamini has been assigned to your electricity report #RPT-0091.</div></div><div class="notif-time">3h ago</div></div>
         <div class="notif-item"><div class="notif-icon teal"><i class="fa-solid fa-circle-info"></i></div><div class="notif-body"><div class="notif-title">Planned Maintenance — Block X</div><div class="notif-sub">Scheduled electricity maintenance on 25 Sep 2026 from 09:00–13:00.</div></div><div class="notif-time">1 day ago</div></div>
         <div class="notif-item"><div class="notif-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="notif-body"><div class="notif-title">Area Outage Alert</div><div class="notif-sub">A major electricity outage has been reported in Block S. Electricians are responding.</div></div><div class="notif-time">2 days ago</div></div>
@@ -263,14 +257,8 @@
       <div class="card">
         <div class="card-header"><span>All Your Reports</span><div class="filter-sort"><button class="btn-ghost"><i class="fa-solid fa-filter"></i> Filter</button></div></div>
         <table class="data-table">
-          <thead><tr><th>Report ID</th><th>Type</th><th>Area</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>#RPT-0091</td><td>Electricity</td><td>Block X</td><td>No power since morning</td><td>21 Sep 2026</td><td><span class="badge orange">In Progress</span></td></tr>
-            <tr><td>#RPT-0085</td><td>Water</td><td>Block X</td><td>No water pressure</td><td>18 Sep 2026</td><td><span class="badge green">Resolved</span></td></tr>
-            <tr><td>#RPT-0078</td><td>Electricity</td><td>Block X</td><td>Flickering lights, tripped breaker</td><td>10 Sep 2026</td><td><span class="badge green">Resolved</span></td></tr>
-            <tr><td>#RPT-0061</td><td>Roads</td><td>Block X</td><td>Large pothole on main road</td><td>28 Aug 2026</td><td><span class="badge green">Resolved</span></td></tr>
-            <tr><td>#RPT-0054</td><td>Electricity</td><td>Block X</td><td>Street light out for 2 weeks</td><td>15 Aug 2026</td><td><span class="badge green">Resolved</span></td></tr>
-          </tbody>
+          <thead><tr><th>Report ID</th><th>Fault</th><th>Area</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="historyBody"></tbody>
         </table>
       </div>
     </div>
@@ -283,9 +271,9 @@
         <div class="confirm-list">
           <div class="confirm-item">
             <div class="confirm-info">
-              <div class="confirm-id">#RPT-0085</div>
-              <div class="confirm-desc">Water — Block X — No water pressure</div>
-              <div class="confirm-date">Resolved on 18 Sep 2026</div>
+              <div class="confirm-id">#RPT-0078</div>
+              <div class="confirm-desc">Partial Power — Block X — Flickering lights, tripped breaker</div>
+              <div class="confirm-date">Resolved on 10 Sep 2026</div>
             </div>
             <div class="confirm-actions">
               <button class="btn-primary" onclick="confirmResolved(this)"><i class="fa-solid fa-check"></i> Yes, Fixed</button>
@@ -303,8 +291,8 @@
         <table class="data-table">
           <thead><tr><th>Report ID</th><th>Type</th><th>Confirmed On</th><th>Rating</th></tr></thead>
           <tbody>
-            <tr><td>#RPT-0078</td><td>Electricity</td><td>12 Sep 2026</td><td>⭐⭐⭐⭐</td></tr>
-            <tr><td>#RPT-0061</td><td>Roads</td><td>30 Aug 2026</td><td>⭐⭐⭐</td></tr>
+            <tr><td>#RPT-0054</td><td>Street Light</td><td>17 Aug 2026</td><td>⭐⭐⭐⭐</td></tr>
+            <tr><td>#RPT-0049</td><td>No Power</td><td>02 Aug 2026</td><td>⭐⭐⭐</td></tr>
           </tbody>
         </table>
       </div>
@@ -328,10 +316,10 @@
           <div class="form-group">
             <label>Hazard Type <span class="req">*</span></label>
             <div class="type-selector">
-              <div class="type-opt active" data-type="wire"><i class="fa-solid fa-bolt"></i> Exposed Wire</div>
-              <div class="type-opt" data-type="burst"><i class="fa-solid fa-droplet"></i> Burst Main</div>
-              <div class="type-opt" data-type="fire"><i class="fa-solid fa-fire"></i> Fire Risk</div>
-              <div class="type-opt" data-type="flood"><i class="fa-solid fa-water"></i> Flooding</div>
+              <div class="type-opt active" data-type="wire"><i class="fa-solid fa-bolt"></i> Exposed Live Wire</div>
+              <div class="type-opt" data-type="fallen"><i class="fa-solid fa-tower-broadcast"></i> Fallen Power Line</div>
+              <div class="type-opt" data-type="sparking"><i class="fa-solid fa-fire"></i> Sparking Box</div>
+              <div class="type-opt" data-type="transformer"><i class="fa-solid fa-explosion"></i> Transformer Fault</div>
             </div>
           </div>
           <div class="form-group">
@@ -360,7 +348,6 @@
           <div class="card-header"><span><i class="fa-solid fa-phone"></i> Emergency Contacts</span></div>
           <div class="emergency-contacts">
             <div class="ec-row"><div class="ec-icon red"><i class="fa-solid fa-bolt"></i></div><div><div class="ec-name">Electricity Emergency</div><div class="ec-num">0800 111 222</div></div></div>
-            <div class="ec-row"><div class="ec-icon teal"><i class="fa-solid fa-droplet"></i></div><div><div class="ec-name">Water Emergency</div><div class="ec-num">0800 333 444</div></div></div>
             <div class="ec-row"><div class="ec-icon orange"><i class="fa-solid fa-fire"></i></div><div><div class="ec-name">Fire Department</div><div class="ec-num">10177</div></div></div>
             <div class="ec-row"><div class="ec-icon purple"><i class="fa-solid fa-shield-halved"></i></div><div><div class="ec-name">Police</div><div class="ec-num">10111</div></div></div>
             <div class="ec-row"><div class="ec-icon green"><i class="fa-solid fa-truck-medical"></i></div><div><div class="ec-name">Ambulance</div><div class="ec-num">10177</div></div></div>
@@ -379,6 +366,7 @@
 
   </main>
 </div>
+<script src="grid-state.js"></script>
 <script src="citizen.js"></script>
 </body>
 </html>

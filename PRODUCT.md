@@ -10,15 +10,15 @@ web
 
 Three roles, each with their own portal:
 
-- **Residents (Citizen Portal)** — report an electricity or water fault, track its status, and see outages in their area.
-- **Field electricians (Electrician Portal)** — view assigned jobs, log repair notes, and track their route/status from the field.
+- **Residents (Citizen Portal)** — report an electricity fault, track its status, and see power outages in their area.
+- **Field electricians (Electrician Portal)** — receive dispatched tickets, download them for use on site, log repair notes, and track their route/status from the field.
 - **Municipal operations staff (Dashboard)** — monitor every outage on a live map, run AI-assisted dispatch, track crews, and review workforce, performance, predictive-risk, maintenance and analytics data.
 
 No role is more "primary" than another — the product's premise is that all three sides of one incident (report → dispatch → repair) share a single connected system, rather than each working from disconnected tools.
 
 ## Product Purpose
 
-gridsh0ck is a working front-end prototype for municipal electricity/water outage management in Soshanguve, City of Tshwane. It takes an outage from initial report through verification, prioritisation, dispatch, repair, resident notification, and closure — and turns closed jobs into historical data used to flag recurring problem areas (90-day outage rate above 50%) before they become repeat failures.
+gridsh0ck is a working front-end prototype for municipal electricity outage management in Soshanguve, City of Tshwane. It covers electricity faults only — water, sewage and roads are deliberately out of scope. It takes an outage from initial report through verification, prioritisation, dispatch, repair, resident notification, and closure — and turns closed jobs into historical data used to flag recurring problem areas (90-day outage rate above 50%) before they become repeat failures.
 
 Success is defined by the prototype scoring well against the brief of the **City of Tshwane Smart Outage Management challenge** it was built for. It is explicitly not an official City of Tshwane platform.
 
@@ -34,6 +34,8 @@ The seven-step outage lifecycle the product is built around: report outage → v
 - Electricians work from a mobile-oriented field view: assigned jobs, routing, status updates.
 - Residents self-serve: report a fault, track it, see nearby outages.
 - Sign in / sign up are UI-only — role selection routes to the matching portal; no real auth exists.
+- Dispatch is automatic: a fault filed by a resident is assigned to the nearest electrician with capacity at the moment of submission, and the ticket reaches the field portal without a dispatcher acting. Operations oversees and can override; it is not a manual step in the path.
+- Per-fault downloads belong to the electrician who works the ticket. Operations keeps queue-level exports (CSV/JSON) for records.
 
 ## Capabilities and Constraints
 

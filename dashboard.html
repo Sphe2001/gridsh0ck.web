@@ -27,6 +27,7 @@
       <div class="nav-section-label">OPERATIONS</div>
       <nav>
         <a href="#" class="nav-item active" data-section="overview"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        <a href="#" class="nav-item" data-section="reports"><i class="fa-solid fa-inbox"></i> Fault Reports <span class="nav-count" id="navReportCount" hidden>0</span></a>
         <a href="#" class="nav-item" data-section="map"><i class="fa-solid fa-map-location-dot"></i> Live Map</a>
         <a href="#" class="nav-item" data-section="dispatch"><i class="fa-solid fa-robot"></i> AI Dispatch</a>
         <a href="#" class="nav-item" data-section="tracking"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a>
@@ -61,7 +62,7 @@
         <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search outages, electricians..."/></div>
         <div class="topbar-right">
           <span class="date-range"><i class="fa-regular fa-calendar"></i> Last 30 days</span>
-          <button class="btn-export"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
+          <button class="btn-export" onclick="exportReportsCSV()"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
         </div>
       </div>
 
@@ -170,6 +171,55 @@
             <div class="card-header"><span><i class="fa-solid fa-map-pin"></i> Outage Hotspots</span><a href="#" class="see-all" data-section="map">See All</a></div>
             <div id="miniMap"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- CITIZEN FAULT REPORTS -->
+      <div id="section-reports" class="section">
+        <div class="section-title"><i class="fa-solid fa-inbox" style="color:var(--primary)"></i> Citizen Fault Reports</div>
+
+        <div class="reports-intro">
+          <div>
+            <b>Live inbox.</b> Every fault filed in the citizen portal lands here the moment it is
+            submitted — no refresh. Priority is derived from the fault type and how long the power has
+            been off, then the dispatch engine assigns the nearest electrician with capacity and sends
+            them the ticket. Faults with no crew free stay flagged here until one opens up.
+          </div>
+          <div class="reports-live"><span class="live-dot"></span> Listening for new reports</div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-bolt"></i></div><div><div class="kpi-label">Total Reports</div><div class="kpi-value" id="rp-total">0</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-user-clock"></i></div><div><div class="kpi-label">Awaiting Crew</div><div class="kpi-value" id="rp-new">0</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon purple"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="kpi-label">Critical Priority</div><div class="kpi-value" id="rp-critical">0</div></div></div>
+          <div class="kpi-card"><div class="kpi-icon teal"><i class="fa-solid fa-clock"></i></div><div><div class="kpi-label">Received Today</div><div class="kpi-value" id="rp-today">0</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header reports-header">
+            <span><i class="fa-solid fa-list-check"></i> Report Queue</span>
+            <div class="reports-tools">
+              <div class="toggle-group reports-filter">
+                <button class="tog active" data-status="all">All</button>
+                <button class="tog" data-status="New">Awaiting crew</button>
+                <button class="tog" data-status="Assigned">Assigned</button>
+                <button class="tog" data-status="In Progress">In Progress</button>
+                <button class="tog" data-status="Resolved">Resolved</button>
+              </div>
+              <button class="btn-ghost" onclick="exportReportsCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+              <button class="btn-ghost" onclick="exportReportsJSON()"><i class="fa-solid fa-file-code"></i> Export JSON</button>
+              <button class="btn-ghost" onclick="resetLedger()"><i class="fa-solid fa-rotate-left"></i> Reset demo data</button>
+            </div>
+          </div>
+          <table class="data-table reports-table">
+            <thead>
+              <tr>
+                <th>Reference</th><th>Received</th><th>Fault</th><th>Block</th>
+                <th>Priority</th><th>Assigned To</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="reportsBody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -421,6 +471,8 @@
 
     </main>
   </div>
+  <script src="grid-state.js"></script>
+  <script src="report-export.js"></script>
   <script src="historical-data.js"></script>
   <script src="app.js"></script>
 </body>

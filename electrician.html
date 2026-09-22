@@ -27,6 +27,7 @@
     <div class="nav-section-label">MY WORK</div>
     <nav>
       <a href="#" class="nav-item active" data-section="home"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="#" class="nav-item" data-section="tickets"><i class="fa-solid fa-ticket"></i> Dispatched Tickets <span class="nav-count" id="navTicketCount" hidden>0</span></a>
       <a href="#" class="nav-item" data-section="jobs"><i class="fa-solid fa-list-check"></i> Assigned Jobs</a>
       <a href="#" class="nav-item" data-section="inprogress"><i class="fa-solid fa-spinner"></i> In Progress</a>
       <a href="#" class="nav-item" data-section="completed"><i class="fa-solid fa-circle-check"></i> Completed</a>
@@ -41,10 +42,10 @@
       <a href="citizen.html" class="nav-item"><i class="fa-solid fa-house"></i> Citizen Portal</a>
       <a href="index.html" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
       <div class="user-profile">
-        <div class="avatar">JD</div>
+        <div class="avatar" id="crewAvatar">JD</div>
         <div>
-          <div class="user-name">J. Dlamini</div>
-          <div class="user-email">Electrical Team</div>
+          <div class="user-name" id="crewName">J. Dlamini</div>
+          <div class="user-email" id="crewTeam">Electrical Team</div>
         </div>
       </div>
     </div>
@@ -55,9 +56,12 @@
     <div class="topbar">
       <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search jobs, outage ID..."/></div>
       <div class="topbar-right">
-        <span class="date-range"><i class="fa-solid fa-location-dot"></i> Soshanguve</span>
+        <label class="crew-switch">
+          <span>Signed in as</span>
+          <select id="crewSelect" class="status-select" aria-label="Signed-in electrician"></select>
+        </label>
         <span class="status-pill online"><i class="fa-solid fa-circle"></i> On Duty</span>
-        <button class="btn-export"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
+        <button class="btn-export" onclick="downloadMyTickets()"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
       </div>
     </div>
 
@@ -123,6 +127,29 @@
           </tbody>
         </table>
       </div>
+    </div>
+
+    <!-- DISPATCHED TICKETS (from the shared fault ledger) -->
+    <div id="section-tickets" class="section">
+      <div class="section-title"><i class="fa-solid fa-ticket" style="color:var(--primary)"></i> Dispatched Tickets</div>
+
+      <div class="reports-intro">
+        <div>
+          <b>Straight from the resident.</b> When a fault is filed in the citizen portal the dispatch
+          engine picks the nearest crew with capacity and the ticket lands here &mdash; no refresh.
+          Download it before you leave; the ticket opens without a signal.
+        </div>
+        <div class="reports-live"><span class="live-dot"></span> <span id="ticketCrewLabel">Listening for tickets</span></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-icon purple"><i class="fa-solid fa-ticket"></i></div><div><div class="kpi-label">Open Tickets</div><div class="kpi-value" id="tk-open">0</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="kpi-label">Critical</div><div class="kpi-value" id="tk-critical">0</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-person-running"></i></div><div><div class="kpi-label">In Progress</div><div class="kpi-value" id="tk-progress">0</div></div></div>
+        <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-circle-check"></i></div><div><div class="kpi-label">Resolved</div><div class="kpi-value" id="tk-done">0</div></div></div>
+      </div>
+
+      <div class="ticket-list" id="ticketList"></div>
     </div>
 
     <!-- ASSIGNED JOBS -->
@@ -307,6 +334,8 @@
   </div>
 </div>
 
+<script src="grid-state.js"></script>
+<script src="report-export.js"></script>
 <script src="electrician.js"></script>
 </body>
 </html>

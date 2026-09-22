@@ -25,6 +25,8 @@
   --accent-bright: #2fe0bd;
   /* Teal legible as text on light surfaces; --primary only passes as a fill. */
   --primary-ink: #0b7a64;
+  /* Red legible as text on the pale red banner tint; --red only passes as a fill. */
+  --red-ink: #b3261e;
 }
 
 body {
@@ -148,7 +150,7 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
 .card-header i { color: var(--primary); margin-right: 6px; }
 .toggle-group { display: flex; gap: 4px; }
 .tog { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted); }
-.tog.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tog.active { background: var(--primary); color: #06202a; font-weight: 600; border-color: var(--primary); }
 .filter-sort { display: flex; gap: 8px; }
 .btn-ghost { background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 .btn-ghost:hover { background: var(--bg); }
@@ -295,4 +297,133 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
   .kpi-grid { grid-template-columns: 1fr; }
   .section-title { font-size: 17px; }
   .card { padding: 14px; }
+}
+
+/* CITIZEN FAULT REPORTS (operations inbox) */
+/* A count someone acts on, so it stays legible: 11px, and the darker red
+   carries white text at 6.4:1 where --red only manages 3.8:1. */
+.nav-count {
+  margin-left: auto; background: var(--red-ink); color: #fff; font-size: 11px; font-weight: 700;
+  min-width: 20px; height: 20px; border-radius: 10px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums;
+}
+.reports-intro {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--text-muted); line-height: 1.6;
+}
+.reports-intro b { color: var(--text); }
+.reports-live {
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  font-size: 12px; font-weight: 600; color: var(--primary-ink);
+}
+/* Static on purpose: the arrival toast and the sidebar count are the real
+   live signals, so this only has to label the connection, not perform it. */
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+
+.reports-header { align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.reports-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.reports-table th:last-child, .reports-table td:last-child { text-align: right; }
+.cell-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.reports-empty { color: var(--text-muted); text-align: center; padding: 28px 10px; }
+.status-select {
+  font: inherit; font-size: 12px; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer;
+}
+.report-actions { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+.report-actions .btn-ghost { padding: 5px 10px; }
+
+.report-toast {
+  position: fixed; bottom: 20px; right: 20px; width: 320px; z-index: 1000;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.18); padding: 14px 16px;
+  transform: translateY(20px); opacity: 0; transition: transform .3s ease, opacity .3s ease;
+}
+.report-toast.show { transform: translateY(0); opacity: 1; }
+.report-toast-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-weight: 700; font-size: 12px; letter-spacing: .4px; text-transform: uppercase;
+  color: var(--primary-ink); margin-bottom: 8px;
+}
+.report-toast-close {
+  background: none; border: none; color: var(--text-muted); font-size: 18px;
+  cursor: pointer; line-height: 1; padding: 0;
+}
+.report-toast-close:hover { color: var(--text); }
+.report-toast-body { font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+.report-toast-go { width: 100%; justify-content: center; }
+@media (max-width: 480px) {
+  .report-toast { left: 12px; right: 12px; width: auto; }
+  .report-actions { justify-content: flex-start; }
+}
+
+/* DISPATCHED TICKETS (field portal) */
+.crew-switch { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+.crew-switch select { min-width: 150px; }
+
+.crew-cell { min-width: 170px; }
+.row-waiting td { background: #fffaf2; }
+
+.ticket-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.ticket-card {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 10px;
+}
+.ticket-card.is-resolved { opacity: .62; }
+.ticket-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ticket-ref { font-family: var(--font-display); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ticket-fault { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.ticket-fault i { color: var(--orange); margin-right: 4px; }
+.ticket-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.ticket-where { font-size: 13.5px; display: flex; align-items: flex-start; gap: 7px; }
+.ticket-where i { color: var(--red); margin-top: 3px; }
+.ticket-desc {
+  font-size: 13px; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; line-height: 1.55;
+}
+.ticket-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11.5px; color: var(--text-muted); }
+.ticket-meta i { margin-right: 4px; }
+.ticket-why {
+  font-size: 11.5px; color: var(--primary-ink); background: #e8faf5;
+  border-radius: 6px; padding: 7px 10px; line-height: 1.5;
+}
+.ticket-why i { margin-right: 5px; }
+.ticket-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 4px; }
+.ticket-actions .btn-ghost { padding: 6px 11px; text-decoration: none; }
+.ticket-accept { color: var(--primary-ink); border-color: #b9ecdf; background: #e8faf5; }
+.ticket-accept:hover { background: #d7f5ec; }
+.ticket-done { color: var(--primary-ink); border-color: #b9ecdf; background: #e8faf5; }
+.ticket-done:hover { background: #d7f5ec; }
+.ticket-empty {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 14px;
+  font-size: 13.5px; color: var(--text-muted); line-height: 1.6;
+}
+.ticket-empty i { font-size: 22px; color: var(--primary); }
+.ticket-empty b { color: var(--text); }
+
+@media (max-width: 560px) {
+  .ticket-list { grid-template-columns: 1fr; }
+  .crew-switch span { display: none; }
+}
+
+/* Diagnostics: shown only when the portals genuinely cannot share the ledger */
+.storage-warning {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fdecea; border: 1px solid #f5c6c2; border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 18px; font-size: 13px;
+  color: var(--red-ink); line-height: 1.6; grid-column: 1 / -1;
+}
+.storage-warning i { font-size: 18px; margin-top: 2px; flex-shrink: 0; }
+.storage-warning code {
+  background: #fff; border: 1px solid #f5c6c2; border-radius: 4px;
+  padding: 1px 5px; font-size: 12px;
+}
+.ticket-elsewhere {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text);
+}
+.ticket-elsewhere .btn-ghost { padding: 5px 11px; }
+.ticket-elsewhere-note {
+  flex-basis: 100%; font-size: 12px; color: var(--text-muted); line-height: 1.55;
 }
